@@ -1,0 +1,30 @@
+[
+ {
+  "studievorm": "Quickscan",
+  "prijs": 7500,
+  "weken": 4,
+  "uren": 60,
+  "wat": "Eerste beeld van de maatschappelijke waarde, op basis van bestaande gegevens en kengetallen."
+ },
+ {
+  "studievorm": "Standaard MKBA",
+  "prijs": 22500,
+  "weken": 12,
+  "uren": 170,
+  "wat": "Volledige maatschappelijke kosten-batenanalyse met effecten per domein en een rendement per euro."
+ },
+ {
+  "studievorm": "Uitgebreide MKBA",
+  "prijs": 45000,
+  "weken": 20,
+  "uren": 340,
+  "wat": "Diepgaande MKBA zoals voor House of Hope, met eigen dataverzameling en gevoeligheidsanalyse."
+ },
+ {
+  "studievorm": "Jaarlijkse update",
+  "prijs": 6000,
+  "weken": 4,
+  "uren": 45,
+  "wat": "Actualisatie van een eerdere MKBA met de cijfers van het afgelopen jaar."
+ }
+]

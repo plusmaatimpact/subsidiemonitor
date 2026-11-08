@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gemeentedashboard · Plusmaat</title>
+<meta name="description" content="Gesubsidieerde instellingen van één gemeente, met impactstatus en aanvraag van een impactstudie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/plusmaat.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+window.DASH_SOURCES = (function () {
+  const g = new URLSearchParams(location.search).get('g');
+  if (!g) { location.replace('index.html'); return {}; }
+  document.title = 'Subsidies ' + g + ' · Plusmaat';
+  return {
+    posten: {url: 'data/posten.json', filter: (r) => r.gemeente === g},
+    gemeente: {url: 'data/gemeenten.json', filter: (r) => r.gemeente === g},
+    studies: {url: 'data/studies.json', filter: (r) => r.gemeente === g},
+    studievormen: 'data/studievormen.json'
+  };
+})();
+window.DASH_PARAMS = {"soort": "Instelling"};
+</script>
+<script src="assets/dash.js"></script>
+</head>
+<body>
+<header class="site-top"><div class="site-top-in">
+  <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>Plusmaat<br>Impact</span></a>
+  <nav class="site-nav" aria-label="Hoofdmenu"><a href="index.html">Monitor</a><a href="dataloket.html">Dataloket</a></nav>
+</div></header>
+<main id="dash-root">
+<style>
+.pm{--pm-teal:#14B8A6;--pm-tealdk:#0F766E;--pm-amber:#F59E0B;--pm-blue:#5577A3;--pm-geen:var(--cds-chart-muted);font-family:var(--font-anthropic-sans);display:flex;flex-direction:column;gap:var(--cds-gap-lg)}
+.pm h1{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:0;line-height:1.2}
+.pm-eyebrow{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:0 0 var(--cds-gap-xs);letter-spacing:.02em}
+.pm-take{margin:var(--cds-gap-xs) 0 0;color:var(--color-fg-muted);max-width:68ch}
+.pm .pm-take b{color:var(--color-fg);font-weight:600;font-variant-numeric:tabular-nums}
+.pm-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:var(--cds-gap-md)}
+.pm-card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
+.pm-tile{display:flex;flex-direction:column;gap:var(--cds-gap-xs)}
+.pm-tile .pm-lbl{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-tile .pm-val{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);font-variant-numeric:tabular-nums;line-height:1.15}
+.pm-tile .pm-sub{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-tile.pm-accent{border-top:3px solid var(--pm-teal)}
+.pm h2{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0}
+.pm-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:var(--cds-gap-xs) 0 var(--cds-gap-md)}
+.pm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-md)}
+.pm-legend{display:flex;flex-wrap:wrap;gap:var(--cds-gap-xs) var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-bottom:var(--cds-gap-sm)}
+.pm-legend span{display:inline-flex;align-items:center;gap:6px}
+.pm-sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.pm-sw.s-af{background:var(--pm-teal)}.pm-sw.s-iu{background:var(--pm-blue)}.pm-sw.s-aa{background:var(--pm-amber)}.pm-sw.s-ge{background:var(--pm-geen)}.pm-sw.s-in{background:var(--pm-teal)}.pm-sw.s-re{background:var(--pm-geen)}
+.pm-chart{position:relative;min-height:12rem}
+.pm-chart svg{display:block;overflow:visible}
+.pm-chart .pm-tick{font-size:var(--cds-font-size-caption);fill:var(--color-fg-muted)}
+.pm-chart .pm-end{font-size:var(--cds-font-size-caption);fill:var(--color-fg);font-variant-numeric:tabular-nums}
+.pm-chart .tick text{font-size:var(--cds-font-size-caption);fill:var(--color-fg-muted)}
+.pm-chart .tick line{stroke:var(--cds-chart-grid)}
+.pm-chart .domain{display:none}
+.pm-tip{position:absolute;pointer-events:none;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);white-space:nowrap;z-index:2}
+.pm-tip .pm-tip-h{color:var(--cds-text-secondary);margin-bottom:2px}
+.pm-tip div{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.pm-fail{display:flex;align-items:center;justify-content:center;gap:8px;min-height:inherit;height:100%;color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
+.pm-fail::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+.pm-filters{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm);align-items:center;margin-bottom:var(--cds-gap-md)}
+.pm-filters .dash-select{min-width:9rem}
+.pm-search{font:inherit;font-size:var(--cds-font-size-body);padding:6px 10px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background-color:var(--color-bg);color:var(--color-fg);min-width:min(100%,14rem);flex:1 1 12rem;max-width:20rem}
+.pm-search:focus-visible,.pm-btn:focus-visible,.pm-sort:focus-visible,.pm-link:focus-visible{outline:3px solid var(--pm-tealdk);outline-offset:2px}
+.pm-btn{font:inherit;font-size:var(--cds-font-size-caption);padding:5px 10px;border-radius:var(--cds-radius);border:1px solid var(--pm-teal);background:transparent;color:var(--color-fg);cursor:pointer;white-space:nowrap}
+.pm-btn:hover{background:color-mix(in srgb,var(--pm-teal) 16%,transparent)}
+.pm-btn[disabled]{opacity:.45;cursor:default;border-color:var(--color-border-line);background:transparent}
+.pm-btn.pm-primary{background:var(--pm-teal);color:#0B2545;border-color:var(--pm-teal);font-weight:600}
+.pm-count{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-left:auto}
+.pm-tablewrap{max-height:34rem;overflow:auto;border-top:1px solid var(--color-border-line)}
+.pm table{width:100%;border-collapse:collapse;font-size:var(--cds-font-size-body);font-variant-numeric:tabular-nums}
+.pm th{position:sticky;top:0;background:var(--color-panel);text-align:left;font-weight:var(--cds-font-weight-medium);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);padding:8px 10px;border-bottom:1px solid var(--color-border-line);z-index:1;white-space:nowrap}
+.pm td{padding:8px 10px;border-bottom:1px solid var(--color-border-line);vertical-align:middle}
+.pm td.num,.pm th.num{text-align:right}
+.pm-sort{all:unset;cursor:pointer}
+.pm-sort::after{content:"";display:inline-block;width:1em}
+.pm th[aria-sort=ascending] .pm-sort::after{content:" ↑"}
+.pm th[aria-sort=descending] .pm-sort::after{content:" ↓"}
+.pm-badge{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.pm-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pm-geen)}
+.pm-badge.s-af::before{background:var(--pm-teal)}.pm-badge.s-iu::before{background:var(--pm-blue)}.pm-badge.s-aa::before{background:var(--pm-amber)}
+.pm-old{color:var(--color-warn)}
+.pm-sub2{display:block;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+@media (max-width:720px){.pm .pm-hide-sm{display:none}}
+.pm-aanvraag{border-left:4px solid var(--pm-teal)}
+.pm-aanvraag-head{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--cds-gap-md);flex-wrap:wrap}
+.pm-aanvraag h3{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:2px 0 0}
+.pm-facts{display:flex;flex-wrap:wrap;gap:var(--cds-gap-xs) var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:var(--cds-gap-sm) 0 var(--cds-gap-md)}
+.pm-facts b{color:var(--color-fg);font-weight:600}
+.pm-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:var(--cds-gap-md);align-items:start}
+.pm-form label{display:flex;flex-direction:column;gap:6px;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-spec{display:grid;grid-template-columns:repeat(3,auto);gap:var(--cds-gap-md);justify-content:start}
+.pm-spec .pm-lbl{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-spec .pm-v{font-family:var(--font-anthropic-serif);font-size:var(--cds-font-size-heading);font-variant-numeric:tabular-nums}
+.pm-wat{margin:var(--cds-gap-sm) 0 0;font-size:var(--cds-font-size-body)}
+.pm-adv{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:6px 0 0}
+.pm-actions{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm);align-items:center;margin-top:var(--cds-gap-md)}
+.pm-link{display:inline-block;text-decoration:none;padding:7px 14px;border-radius:var(--cds-radius);background:var(--pm-teal);color:#0B2545;font-weight:600;font-size:var(--cds-font-size-body)}
+.pm-small{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm details{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
+.pm details summary{cursor:pointer;color:var(--color-fg)}
+.pm dl{display:grid;grid-template-columns:minmax(8rem,max-content) 1fr;gap:6px var(--cds-gap-md);margin:var(--cds-gap-sm) 0}
+.pm dt{color:var(--color-fg);font-weight:600}.pm dd{margin:0}
+[data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
+[data-dash-source-state=empty]{color:transparent}
+.pm-posten{margin:var(--cds-gap-sm) 0 0;padding:0;list-style:none;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);display:flex;flex-direction:column;gap:2px}
+.pm-posten li{display:flex;justify-content:space-between;gap:var(--cds-gap-md);max-width:32rem;font-variant-numeric:tabular-nums}
+.pm-posten b{color:var(--color-fg);font-weight:600}
+.pm-chart.pm-tall{min-height:20rem}
+.pm-nav{margin-bottom:calc(-1 * var(--cds-gap-sm))}
+.pm-back{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);text-decoration:none}
+.pm-back:hover{color:var(--color-fg);text-decoration:underline}
+.pm-back:focus-visible{outline:3px solid var(--pm-tealdk);outline-offset:2px}
+.pm-scope{margin:var(--cds-gap-xs) 0 0;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+</style>
+<div class="pm" lang="nl">
+  <nav class="pm-nav" aria-label="Navigatie"><a class="pm-back" href="index.html">← Alle gemeenten</a></nav>
+  <header class="pm-head" id="overzicht">
+    <p class="pm-eyebrow">Plusmaat Impact · Subsidiemonitor · Begroting <span data-draw="h-jaar" data-source="gemeente" data-field="jaar">—</span></p>
+    <h1>Gesubsidieerde instellingen in <span data-draw="h-naam" data-source="gemeente" data-field="gemeente">—</span></h1>
+    <p class="pm-take"><span data-draw="t-gem" data-source="gemeente" data-field="gemeente">—</span> begroot <b data-draw="t-totaal" data-source="kpi" data-field="totaal">—</b> aan subsidies, waarvan <b data-draw="t-inst" data-source="kpi" data-field="instellingBedrag">—</b> naar <b data-draw="t-ninst" data-source="kpi" data-field="nInstellingen">—</b> instellingen. Van <b data-draw="t-nzonder" data-source="kpi" data-field="nZonder">—</b> instellingen, samen goed voor <b data-draw="t-zonder" data-source="kpi" data-field="zonderBedrag">—</b>, is nog geen impactstudie bekend.</p>
+    <p class="pm-scope">Reikwijdte: <span data-draw="h-scope" data-source="gemeente" data-field="reikwijdte">—</span></p>
+  </header>
+
+  <section class="pm-tiles" id="kerncijfers" aria-label="Kerncijfers">
+    <div class="pm-card pm-tile pm-accent">
+      <span class="pm-lbl">Subsidie, totaal</span>
+      <span class="pm-val dash-skeleton" data-draw="k-totaal" data-source="kpi" data-field="totaal">—</span>
+      <span class="pm-sub">som van alle posten in de begroting</span>
+    </div>
+    <div class="pm-card pm-tile">
+      <span class="pm-lbl">Per inwoner</span>
+      <span class="pm-val dash-skeleton" data-draw="k-inwoner" data-source="kpi" data-field="perInwoner">—</span>
+      <span class="pm-sub"><span data-draw="k-inwoners" data-source="gemeente" data-field="inwoners">—</span> inwoners op 1 januari 2026</span>
+    </div>
+    <div class="pm-card pm-tile">
+      <span class="pm-lbl">Instellingen</span>
+      <span class="pm-val dash-skeleton" data-draw="k-ninst" data-source="kpi" data-field="nInstellingen">—</span>
+      <span class="pm-sub">plus <span data-draw="k-nreg" data-source="kpi" data-field="nRegelingen">—</span> regelingen en budgetposten</span>
+    </div>
+    <div class="pm-card pm-tile">
+      <span class="pm-lbl">Met impactstudie</span>
+      <span class="pm-val dash-skeleton" data-draw="k-metstudie" data-source="kpi" data-field="nMetStudie">—</span>
+      <span class="pm-sub">instellingen, afgerond, lopend of aangevraagd</span>
+    </div>
+    <div class="pm-card pm-tile">
+      <span class="pm-lbl">Gemeten rendement</span>
+      <span class="pm-val dash-skeleton" data-draw="k-rendement" data-source="kpi" data-field="gemRendement">—</span>
+      <span class="pm-sub">maatschappelijke baten per euro, gemiddelde van <span data-draw="k-nafgerond" data-source="kpi" data-field="nAfgerond">—</span> MKBA</span>
+    </div>
+  </section>
+
+  <section class="pm-grid" id="verdeling" aria-label="Verdeling">
+    <div class="pm-card" id="per-domein">
+      <h2>Subsidie per domein</h2>
+      <p class="pm-note">Begrotingsbedrag per Plusmaat-domein, naar instellingen en regelingen. Klik op een balk om het register te filteren.</p>
+      <div class="pm-legend"><span><i class="pm-sw s-in"></i>Instellingen</span><span><i class="pm-sw s-re"></i>Regelingen en budgetposten</span></div>
+      <div class="pm-chart" data-draw="chart-domein" data-source="perDomein"></div>
+    </div>
+    <div class="pm-card" id="per-omvang">
+      <h2>Instellingen naar omvang subsidie</h2>
+      <p class="pm-note">Aantal instellingen per subsidieklasse; de klasse bepaalt het advies voor de studievorm.</p>
+      <div class="pm-legend"><span><i class="pm-sw s-in"></i>Aantal instellingen</span></div>
+      <div class="pm-chart" data-draw="chart-omvang" data-source="perOmvang"></div>
+    </div>
+  </section>
+
+  <section class="pm-card" id="register">
+    <h2>Register van instellingen</h2>
+    <p class="pm-note">Klik op <b>Aanvragen</b> om voor een instelling een Plusmaat-impactstudie aan te vragen. Een instelling met posten in meerdere categorieën staat één keer in de lijst, onder de categorie met het hoogste bedrag.</p>
+    <div class="pm-filters">
+      <input class="pm-search" type="search" placeholder="Zoek op naam" aria-label="Zoek instelling">
+      <select class="dash-select pm-soort" aria-label="Soort">
+        <option value="Instelling">Alleen instellingen</option>
+        <option value="Regeling">Alleen regelingen</option>
+        <option value="">Instellingen en regelingen</option>
+      </select>
+      <select class="dash-select" data-draw="f-domein" data-source="instellingen" aria-label="Domein"></select>
+      <select class="dash-select" data-draw="f-type" data-source="instellingen" aria-label="Type instelling"></select>
+      <select class="dash-select" data-draw="f-status" data-source="instellingen" aria-label="Impactstatus"></select>
+      <button class="pm-btn pm-reset" type="button">Wis filters</button>
+      <span class="pm-count"><span data-draw="tabel-aantal">—</span> getoond · <span data-draw="tabel-som">—</span></span>
+    </div>
+    <div class="pm-tablewrap">
+      <table class="pm-table" data-source="instellingen" data-row-key="instelling">
+        <thead><tr>
+          <th data-field="instelling"><button class="pm-sort" data-sort="instelling">Instelling</button></th>
+          <th data-field="domein" class="pm-hide-sm"><button class="pm-sort" data-sort="domein">Domein</button></th>
+          <th data-field="categorie" class="pm-hide-sm"><button class="pm-sort" data-sort="categorie">Categorie in begroting</button></th>
+          <th data-field="type" class="pm-hide-sm"><button class="pm-sort" data-sort="type">Type</button></th>
+          <th data-field="subsidie" class="num" aria-sort="descending"><button class="pm-sort" data-sort="subsidie">Subsidie</button></th>
+          <th data-field="status"><button class="pm-sort" data-sort="status">Impactstatus</button></th>
+          <th data-field="rendement" class="num pm-hide-sm"><button class="pm-sort" data-sort="rendement">Rendement/€</button></th>
+          <th data-field="advies" class="pm-hide-sm"><button class="pm-sort" data-sort="advies">Advies</button></th>
+          <th><span class="pm-small">Studie</span></th>
+        </tr></thead>
+        <tbody data-draw="tabel"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="pm-card pm-aanvraag" id="aanvraag" hidden>
+    <div class="pm-aanvraag-head">
+      <div>
+        <p class="pm-eyebrow">Impactstudie aanvragen</p>
+        <h3 data-draw="a-naam" data-source="instellingen">—</h3>
+      </div>
+      <button class="pm-btn pm-close" type="button">Sluiten</button>
+    </div>
+    <div class="pm-facts" data-draw="a-feiten" data-source="instellingen">—</div>
+    <div class="pm-form">
+      <div>
+        <label>Studievorm
+          <select class="dash-select" data-draw="a-vorm" data-source="studievormen instellingen" aria-label="Studievorm"></select>
+        </label>
+        <p class="pm-adv">Ons advies: <b data-draw="a-advies" data-source="instellingen">—</b>, op basis van de hoogte van de subsidie en eerdere studies.</p>
+        <p class="pm-small">Subsidieposten in de begroting:</p>
+        <ul class="pm-posten" data-draw="a-posten" data-source="posten"></ul>
+      </div>
+      <div>
+        <div class="pm-spec">
+          <div><div class="pm-lbl">Indicatieve prijs</div><div class="pm-v" data-draw="a-prijs" data-source="studievormen">—</div></div>
+          <div><div class="pm-lbl">Doorlooptijd</div><div class="pm-v" data-draw="a-weken" data-source="studievormen">—</div></div>
+          <div><div class="pm-lbl">Uren</div><div class="pm-v" data-draw="a-uren" data-source="studievormen">—</div></div>
+        </div>
+        <p class="pm-wat" data-draw="a-wat" data-source="studievormen">—</p>
+        <p class="pm-small">Ter vergelijking: de studie kost <b data-draw="a-aandeel">—</b> van één jaar subsidie.</p>
+      </div>
+    </div>
+    <div class="pm-actions">
+      <span data-draw="a-mail">—</span>
+      <span class="pm-small">Opent een e-mail met de gegevens van deze instelling. Prijzen excl. btw, indicatief.</span>
+    </div>
+  </section>
+
+  <details class="pm-card" id="toelichting">
+    <summary>Bron, begrippen en wat er niet in zit</summary>
+    <dl>
+      <dt>Bron</dt><dd data-draw="d-bron" data-source="gemeente" data-field="bron">—</dd>
+      <dt>Bijzonderheden</dt><dd data-draw="d-opm" data-source="gemeente" data-field="opmerking">—</dd>
+      <dt>Domein</dt><dd>Een vaste Plusmaat-indeling (zoals Zorg &amp; welzijn, Cultuur, Sport &amp; bewegen), zodat gemeenten met verschillende begrotingsindelingen vergelijkbaar zijn. De oorspronkelijke categorie staat in het register.</dd>
+      <dt>Instelling of regeling</dt><dd>Regelingen en budgetposten zijn geen organisaties; daarvoor vraag je geen studie aan. Ze tellen wel mee in het totaal.</dd>
+      <dt>Impactstatus</dt><dd>Komt uit de lijst met studies van Plusmaat Impact, niet uit de begroting. Instellingen die daar niet in staan, krijgen ‘Geen studie bekend’; een studie door een ander bureau is dus niet zichtbaar.</dd>
+      <dt>Advies</dt><dd>Quickscan bij een subsidie onder € 100.000, standaard MKBA tot € 1 mln, uitgebreide MKBA daarboven. Na een afgeronde studie: jaarlijkse update.</dd>
+      <dt>Inwoners</dt><dd>Aantal inwoners op 1 januari 2026 volgens de gemeentelijke bevolkingsregisters (via allecijfers.nl).</dd>
+    </dl>
+    <p>Niet in deze gegevens: wijk, bereik of deelnemers, en contactmomenten met de gemeente. Die kunnen erbij als de gemeente ze aanlevert.</p>
+  </details>
+</div>
+
+<script>
+(() => {
+  const nl = d3.formatLocale({decimal: ',', thousands: '.', grouping: [3], currency: ['€ ', '']});
+  const fInt = nl.format(',d');
+  const fEur = nl.format('$,.0f');
+  const fPct = nl.format('.0%');
+  const fPct1 = nl.format('.1%');
+  const fDec = nl.format(',.2f');
+  const f1 = nl.format(',.1f');
+  const fMln = (v) => v == null ? '—' : Math.abs(v) >= 1e6 ? '€ ' + f1(v / 1e6) + ' mln' : fEur(v);
+  const STATUS = ['Afgerond', 'In uitvoering', 'Aangevraagd', 'Geen studie bekend'];
+  const KEY = {'Afgerond': 'af', 'In uitvoering': 'iu', 'Aangevraagd': 'aa', 'Geen studie bekend': 'ge'};
+  const enc = (v) => String(v).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
+
+  dash.calc('instellingen', {
+    inputs: ['posten', 'studies'],
+    title: 'Instellingen met subsidie 2027',
+    description: 'Posten per instelling opgeteld, met impactstatus uit de studielijst en advies naar subsidieomvang.',
+    fn: (posten, studies) => {
+      const st = new Map(studies.map((s) => [s.instelling, s]));
+      return d3.groups(posten, (p) => p.instelling).map(([instelling, g]) => {
+        const bedragen = g.filter((p) => p.bedrag != null);
+        const subsidie = bedragen.length ? d3.sum(bedragen, (p) => p.bedrag) : null;
+        const hoofd = d3.greatest(g, (p) => p.bedrag ?? -1);
+        const soort = g[0].type === 'Regeling / budgetpost' ? 'Regeling' : 'Instelling';
+        const s = st.get(instelling);
+        const status = soort === 'Regeling' ? 'n.v.t.' : s ? s.status : 'Geen studie bekend';
+        const advies = soort === 'Regeling' || status === 'In uitvoering' ? null
+          : status === 'Afgerond' ? 'Jaarlijkse update'
+          : subsidie == null || subsidie < 100000 ? 'Quickscan'
+          : subsidie < 1000000 ? 'Standaard MKBA' : 'Uitgebreide MKBA';
+        return {instelling, domein: hoofd.domein, categorie: hoofd.categorie, type: g[0].type, soort, posten: g.length, subsidie, status, rendement: s && s.rendement != null ? s.rendement : null, advies};
+      }).sort((a, b) => (b.subsidie ?? -1) - (a.subsidie ?? -1));
+    },
+  });
+
+  dash.calc('kpi', {
+    inputs: ['instellingen', 'gemeente'],
+    title: 'Kerncijfers gemeente',
+    description: 'Totalen over alle posten; per inwoner gedeeld door het inwonertal; studies alleen over instellingen.',
+    fn: (instellingen, gemeente) => {
+      const inst = instellingen.filter((r) => r.soort === 'Instelling');
+      const reg = instellingen.filter((r) => r.soort === 'Regeling');
+      const instBedrag = d3.sum(inst, (r) => r.subsidie);
+      const zonder = inst.filter((r) => r.status === 'Geen studie bekend');
+      const af = inst.filter((r) => r.status === 'Afgerond' && r.rendement != null);
+      const totaal = d3.sum(instellingen, (r) => r.subsidie);
+      const inwoners = gemeente[0] ? gemeente[0].inwoners : null;
+      return [{
+        totaal,
+        perInwoner: inwoners ? totaal / inwoners : null,
+        instellingBedrag: instBedrag,
+        nInstellingen: inst.length,
+        nRegelingen: reg.length,
+        regelingBedrag: d3.sum(reg, (r) => r.subsidie),
+        nMetStudie: inst.length - zonder.length,
+        nZonder: zonder.length,
+        zonderBedrag: d3.sum(zonder, (r) => r.subsidie),
+        nAfgerond: af.length,
+        gemRendement: af.length ? d3.mean(af, (r) => r.rendement) : null,
+      }];
+    },
+  });
+
+  dash.calc('perDomein', {
+    inputs: ['posten'],
+    title: 'Subsidie per domein',
+    description: 'Som van de posten per Plusmaat-domein, gesplitst naar instellingen en regelingen.',
+    fn: (posten) => d3.rollups(posten, (g) => {
+      const reg = g.filter((p) => p.type === 'Regeling / budgetpost');
+      const inst = g.filter((p) => p.type !== 'Regeling / budgetpost');
+      return {
+        instellingen: d3.sum(inst, (p) => p.bedrag ?? 0),
+        regelingen: d3.sum(reg, (p) => p.bedrag ?? 0),
+        totaal: d3.sum(g, (p) => p.bedrag ?? 0),
+        posten: g.length,
+      };
+    }, (p) => p.domein).map(([domein, v]) => ({domein, ...v})).sort((a, b) => b.totaal - a.totaal),
+  });
+
+  dash.calc('perOmvang', {
+    inputs: ['instellingen'],
+    title: 'Instellingen naar omvang subsidie',
+    description: 'Instellingen (geen regelingen) per subsidieklasse: onder € 100.000, € 100.000 tot € 1 mln, € 1 mln of meer.',
+    fn: (instellingen) => {
+      const inst = instellingen.filter((r) => r.soort === 'Instelling');
+      return [
+        {klasse: 'Onder € 100.000', studievorm: 'Quickscan', lo: -Infinity, hi: 100000},
+        {klasse: '€ 100.000 – 1 mln', studievorm: 'Standaard MKBA', lo: 100000, hi: 1000000},
+        {klasse: '€ 1 mln of meer', studievorm: 'Uitgebreide MKBA', lo: 1000000, hi: Infinity},
+      ].map((k) => {
+        const g = inst.filter((r) => (r.subsidie ?? 0) >= k.lo && (r.subsidie ?? 0) < k.hi);
+        return {klasse: k.klasse, studievorm: k.studievorm, aantal: g.length, subsidie: d3.sum(g, (r) => r.subsidie)};
+      });
+    },
+  });
+
+  // ---- tiles and takeaway
+  const one = (name, src, field, fmt) => dash.draw(name, (el) => {
+    const d = dash.data(src);
+    const v = d.status === 'ok' && d.data[0] ? d.data[0][field] : null;
+    el.classList.toggle('dash-skeleton', d.status === 'loading');
+    el.textContent = v == null ? '—' : fmt(v);
+  });
+  const gem = (name, field, fmt) => dash.draw(name, (el) => {
+    const d = dash.data('gemeente');
+    const v = d.status === 'ok' && d.data[0] ? d.data[0][field] : null;
+    el.textContent = v == null ? '—' : fmt(v);
+  });
+  gem('h-jaar', 'jaar', String);
+  gem('h-naam', 'gemeente', String);
+  gem('t-gem', 'gemeente', String);
+  gem('h-scope', 'reikwijdte', String);
+  gem('k-inwoners', 'inwoners', fInt);
+  gem('d-bron', 'bron', String);
+  gem('d-opm', 'opmerking', String);
+  one('t-totaal', 'kpi', 'totaal', fMln);
+  one('t-inst', 'kpi', 'instellingBedrag', fMln);
+  one('t-ninst', 'kpi', 'nInstellingen', fInt);
+  one('t-nzonder', 'kpi', 'nZonder', fInt);
+  one('t-zonder', 'kpi', 'zonderBedrag', fMln);
+  one('k-totaal', 'kpi', 'totaal', fMln);
+  one('k-ninst', 'kpi', 'nInstellingen', fInt);
+  one('k-nreg', 'kpi', 'nRegelingen', fInt);
+  one('k-inwoner', 'kpi', 'perInwoner', (v) => '€ ' + fInt(Math.round(v)));
+  one('k-metstudie', 'kpi', 'nMetStudie', fInt);
+  one('k-rendement', 'kpi', 'gemRendement', (v) => '€ ' + fDec(v));
+  one('k-nafgerond', 'kpi', 'nAfgerond', fInt);
+
+  // ---- charts
+  const fail = (el) => { const f = document.createElement('div'); f.className = 'pm-fail'; f.textContent = 'Laden mislukt'; el.replaceChildren(f); };
+
+  const barChart = (el, rows, labelOf, segs, endLabel, tipLines, xFmt, onClick) => {
+    el.replaceChildren();
+    const W = Math.max(260, el.clientWidth || 520);
+    const barH = 20, gap = 10;
+    const svg = d3.select(el).append('svg').attr('width', '100%');
+    const meas = svg.append('text').attr('class', 'pm-tick');
+    const maxLbl = Math.min(W * 0.42, 230);
+    const lbl = (r) => {
+      const full = labelOf(r);
+      meas.text(full);
+      if (meas.node().getComputedTextLength() <= maxLbl) return full;
+      let s = full;
+      while (s.length > 4) { s = s.slice(0, -1); meas.text(s + '…'); if (meas.node().getComputedTextLength() <= maxLbl) break; }
+      return s + '…';
+    };
+    const labels = rows.map(lbl);
+    let lw = 0, ew = 0;
+    rows.forEach((r, i) => {
+      meas.text(labels[i]); lw = Math.max(lw, meas.node().getComputedTextLength());
+      meas.text(endLabel(r)); ew = Math.max(ew, meas.node().getComputedTextLength());
+    });
+    meas.remove();
+    const m = {l: Math.ceil(lw) + 12, r: Math.ceil(ew) + 10, t: 4, b: 26};
+    const H = m.t + rows.length * (barH + gap) - gap + m.b;
+    svg.attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+    const max = d3.max(rows, (r) => d3.sum(segs(r), (s) => s.v)) || 1;
+    const x = d3.scaleLinear([0, max], [m.l, W - m.r]).nice();
+    const y = (i) => m.t + i * (barH + gap);
+    const ticks = Math.max(2, Math.min(5, Math.floor((W - m.l - m.r) / 90)));
+    const ax = svg.append('g').attr('transform', `translate(0,${H - m.b + 6})`)
+      .call(d3.axisBottom(x).ticks(ticks).tickFormat(xFmt).tickSize(-(H - m.b - m.t + 6)))
+      .attr('font-size', null).attr('font-family', null);
+    ax.selectAll('.tick text').attr('dy', '1.1em');
+    const tip = d3.select(el).append('div').attr('class', 'pm-tip').style('display', 'none');
+    rows.forEach((r, i) => {
+      const g = svg.append('g');
+      g.append('text').attr('class', 'pm-tick').attr('x', m.l - 10).attr('y', y(i) + barH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(labels[i]);
+      let acc = 0;
+      segs(r).forEach((s) => {
+        if (!s.v) return;
+        g.append('rect').attr('x', x(acc)).attr('y', y(i)).attr('width', Math.max(1, x(acc + s.v) - x(acc) - 1)).attr('height', barH).attr('rx', 2).style('fill', s.c);
+        acc += s.v;
+      });
+      g.append('text').attr('class', 'pm-end').attr('x', x(acc) + 6).attr('y', y(i) + barH / 2).attr('dy', '0.35em').text(endLabel(r));
+      g.append('rect').attr('x', 0).attr('y', y(i) - gap / 2).attr('width', W).attr('height', barH + gap).attr('fill', 'transparent')
+        .style('cursor', onClick ? 'pointer' : null)
+        .on('click', () => onClick && onClick(r))
+        .on('mousemove', (ev) => {
+          tip.style('display', null).html('');
+          tip.append('div').attr('class', 'pm-tip-h').text(labelOf(r));
+          tipLines(r).forEach((t) => {
+            const line = tip.append('div');
+            if (t.c) line.append('i').attr('class', 'pm-sw').style('background', t.c);
+            line.append('span').text(t.t);
+          });
+          const [px, py] = d3.pointer(ev, el);
+          const tw = tip.node().offsetWidth;
+          tip.style('left', Math.max(0, Math.min(el.clientWidth - tw, px + 12)) + 'px').style('top', (py + 14) + 'px');
+        })
+        .on('mouseleave', () => tip.style('display', 'none'));
+    });
+  };
+  const tickMln = (v) => v === 0 ? '0' : '€ ' + nl.format(',~f')(v / 1e6) + ' mln';
+
+  dash.draw('chart-domein', (el) => {
+    const d = dash.data('perDomein');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return el.replaceChildren();
+    barChart(el, d.data, (r) => r.domein,
+      (r) => [{v: r.instellingen, c: 'var(--pm-teal)'}, {v: r.regelingen, c: 'var(--pm-geen)'}],
+      (r) => fMln(r.totaal),
+      (r) => [{c: 'var(--pm-teal)', t: `Instellingen: ${fMln(r.instellingen)}`}, {c: 'var(--pm-geen)', t: `Regelingen: ${fMln(r.regelingen)}`}, {t: `Posten: ${fInt(r.posten)} · klik om te filteren`}],
+      tickMln,
+      (r) => { dash.setParams({domein: r.domein}); document.querySelectorAll('#register').forEach((s) => s.scrollIntoView({behavior: 'smooth', block: 'start'})); });
+  });
+
+  dash.draw('chart-omvang', (el) => {
+    const d = dash.data('perOmvang');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return el.replaceChildren();
+    barChart(el, d.data, (r) => r.klasse,
+      (r) => [{v: r.aantal, c: 'var(--pm-teal)'}],
+      (r) => fInt(r.aantal) + ' · ' + fMln(r.subsidie),
+      (r) => [{t: `Instellingen: ${fInt(r.aantal)}`}, {t: `Subsidie samen: ${fMln(r.subsidie)}`}, {t: `Advies: ${r.studievorm}`}],
+      d3.format('d'));
+  });
+
+  // ---- filters
+  const filterSel = (name, col, alle, order) => dash.draw('f-' + name, (sel) => {
+    const d = dash.data('instellingen');
+    const p = dash.params();
+    const basis = d.status === 'ok' ? d.data.filter((r) => !p.soort || r.soort === p.soort) : [];
+    let vals = [...new Set(basis.map((r) => r[col]))];
+    vals = order ? order.filter((v) => vals.includes(v)) : vals.sort((a, b) => String(a).localeCompare(String(b), 'nl'));
+    if (p[name] && !vals.includes(p[name])) vals.push(p[name]);
+    sel.replaceChildren(new Option(alle, ''), ...vals.map((v) => new Option(v, v)));
+    sel.value = p[name] ?? '';
+    sel.onchange = () => dash.setParams({[name]: sel.value || null});
+  });
+  filterSel('domein', 'domein', 'Alle domeinen');
+  filterSel('type', 'type', 'Alle typen');
+  filterSel('status', 'status', 'Alle statussen', [...STATUS, 'n.v.t.']);
+
+  document.querySelectorAll('.pm-soort').forEach((sel) => sel.addEventListener('change', () => dash.setParams({soort: sel.value || null, type: null, status: null})));
+
+  let zoek = '';
+  let sortKey = 'subsidie', sortDir = -1;
+  const redrawTable = () => { dash.draw('tabel'); dash.draw('tabel-aantal'); dash.draw('tabel-som'); };
+  document.querySelectorAll('.pm-search').forEach((inp) => inp.addEventListener('input', () => { zoek = inp.value.trim().toLowerCase(); redrawTable(); }));
+  document.querySelectorAll('.pm-reset').forEach((b) => b.addEventListener('click', () => {
+    zoek = '';
+    document.querySelectorAll('.pm-search').forEach((i) => { i.value = ''; });
+    dash.resetParams();
+    redrawTable();
+  }));
+  document.querySelectorAll('.pm-sort').forEach((b) => b.addEventListener('click', () => {
+    const k = b.dataset.sort;
+    if (k === sortKey) sortDir = -sortDir; else { sortKey = k; sortDir = ['posten', 'subsidie', 'rendement'].includes(k) ? -1 : 1; }
+    document.querySelectorAll('.pm-table th').forEach((th) => th.removeAttribute('aria-sort'));
+    const th = b.closest('th');
+    if (th) th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+    dash.draw('tabel');
+  }));
+
+  const zichtbaar = () => {
+    const d = dash.data('instellingen');
+    if (d.status !== 'ok') return null;
+    const p = dash.params();
+    return d.data.filter((r) => (!p.soort || r.soort === p.soort) && (!p.domein || r.domein === p.domein) && (!p.type || r.type === p.type) && (!p.status || r.status === p.status)
+      && (!zoek || r.instelling.toLowerCase().includes(zoek)));
+  };
+
+  dash.draw('tabel-aantal', (el) => { const rows = zichtbaar(); el.textContent = rows ? fInt(rows.length) : '—'; });
+  dash.draw('tabel-som', (el) => { const rows = zichtbaar(); el.textContent = rows ? fMln(d3.sum(rows, (r) => r.subsidie)) : '—'; });
+
+  dash.draw('tabel', (tb) => {
+    tb.replaceChildren();
+    const rows = zichtbaar();
+    if (!rows) return;
+    const sorted = rows.slice().sort((p, q) => {
+      const x = p[sortKey], y = q[sortKey];
+      if (x == null && y == null) return 0;
+      if (x == null) return 1;
+      if (y == null) return -1;
+      return sortDir * (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'nl'));
+    });
+    const kies = dash.params().kies;
+    const frag = document.createDocumentFragment();
+    sorted.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.instelling;
+      const td = (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); return c; };
+      td(r.instelling);
+      td(r.domein, 'pm-hide-sm');
+      td(r.categorie, 'pm-hide-sm');
+      td(r.type, 'pm-hide-sm');
+      td(r.subsidie == null ? '—' : fEur(r.subsidie), 'num');
+      const sc = td('');
+      const b = document.createElement('span'); b.className = 'pm-badge s-' + (KEY[r.status] || 'ge'); b.textContent = r.status; sc.appendChild(b);
+      td(r.rendement == null ? '—' : '€ ' + fDec(r.rendement), 'num pm-hide-sm');
+      td(r.advies ?? '—', 'pm-hide-sm');
+      const ac = td('');
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pm-btn' + (kies === r.instelling ? ' pm-primary' : '');
+      btn.dataset.kies = r.instelling;
+      btn.textContent = r.soort === 'Regeling' ? 'Regeling' : r.status === 'In uitvoering' ? 'Loopt' : 'Aanvragen';
+      btn.disabled = r.soort === 'Regeling' || r.status === 'In uitvoering';
+      ac.appendChild(btn);
+      frag.appendChild(tr);
+    });
+    tb.appendChild(frag);
+  });
+
+  document.querySelectorAll('.pm-table').forEach((t) => t.addEventListener('click', (ev) => {
+    const b = ev.target.closest('button[data-kies]');
+    if (!b || b.disabled) return;
+    dash.setParams({kies: b.dataset.kies, vorm: null});
+    dash.setLink('aanvraag');
+    requestAnimationFrame(() => document.querySelectorAll('#aanvraag').forEach((s) => s.scrollIntoView({behavior: 'smooth', block: 'start'})));
+  }));
+  document.querySelectorAll('.pm-close').forEach((b) => b.addEventListener('click', () => {
+    dash.setParams({kies: null, vorm: null});
+    document.querySelectorAll('#register').forEach((s) => s.scrollIntoView({behavior: 'smooth', block: 'start'}));
+  }));
+
+  dash.onData(() => {
+    const p = dash.params();
+    document.querySelectorAll('#aanvraag').forEach((s) => { s.hidden = !p.kies; });
+    document.querySelectorAll('.pm-soort').forEach((sel) => { sel.value = p.soort ?? ''; });
+  });
+
+  // ---- aanvraag
+  const gekozen = () => {
+    const d = dash.data('instellingen');
+    const kies = dash.params().kies;
+    return d.status === 'ok' ? d.data.find((r) => r.instelling === kies) : null;
+  };
+  const vormRij = () => {
+    const s = dash.data('studievormen');
+    const org = gekozen();
+    if (s.status !== 'ok' || !org) return null;
+    const naam = dash.params().vorm || org.advies || 'Quickscan';
+    return s.data.find((r) => r.studievorm === naam) || s.data[0];
+  };
+  const mark = (el, src, where, field, text) => {
+    const s = document.createElement('span');
+    s.dataset.source = src; s.dataset.where = where; s.dataset.field = field;
+    s.textContent = text; el.appendChild(s); return s;
+  };
+
+  dash.draw('a-naam', (el) => {
+    el.replaceChildren();
+    const r = gekozen();
+    if (!r) { el.textContent = '—'; return; }
+    mark(el, 'instellingen', 'instelling=' + enc(r.instelling), 'instelling', r.instelling);
+  });
+
+  dash.draw('a-feiten', (el) => {
+    el.replaceChildren();
+    const r = gekozen();
+    if (!r) { el.textContent = '—'; return; }
+    const w = 'instelling=' + enc(r.instelling);
+    [['domein', r.domein, 'Domein'], ['categorie', r.categorie, 'Categorie'], ['type', r.type, 'Type'], ['subsidie', r.subsidie == null ? '—' : fEur(r.subsidie), 'Subsidie'], ['status', r.status, 'Impactstatus']].forEach(([f, v, l]) => {
+      const box = document.createElement('span');
+      box.append(l + ': ');
+      const b = document.createElement('b'); box.appendChild(b);
+      mark(b, 'instellingen', w, f, v);
+      el.appendChild(box);
+    });
+  });
+
+  dash.draw('a-advies', (el) => {
+    el.replaceChildren();
+    const r = gekozen();
+    if (!r) { el.textContent = '—'; return; }
+    mark(el, 'instellingen', 'instelling=' + enc(r.instelling), 'advies', r.advies ?? '—');
+  });
+
+  dash.draw('a-posten', (ul) => {
+    ul.replaceChildren();
+    const d = dash.data('posten');
+    const r = gekozen();
+    if (d.status !== 'ok' || !r) return;
+    d.data.filter((p) => p.instelling === r.instelling).forEach((p) => {
+      const li = document.createElement('li');
+      const c = document.createElement('span'); li.appendChild(c);
+      mark(c, 'posten', 'post=' + p.post, 'categorie', p.categorie);
+      const b = document.createElement('b'); li.appendChild(b);
+      mark(b, 'posten', 'post=' + p.post, 'bedrag', p.bedrag == null ? 'geen bedrag' : fEur(p.bedrag));
+      ul.appendChild(li);
+    });
+  });
+
+  dash.draw('a-vorm', (sel) => {
+    const s = dash.data('studievormen');
+    const v = vormRij();
+    sel.replaceChildren(...(s.status === 'ok' ? s.data : []).map((r) => new Option(r.studievorm, r.studievorm)));
+    if (v) sel.value = v.studievorm;
+    sel.onchange = () => dash.setParams({vorm: sel.value || null});
+  });
+
+  const spec = (name, field, fmt) => dash.draw(name, (el) => {
+    el.replaceChildren();
+    const v = vormRij();
+    if (!v) { el.textContent = '—'; return; }
+    mark(el, 'studievormen', 'studievorm=' + enc(v.studievorm), field, fmt(v[field]));
+  });
+  spec('a-prijs', 'prijs', fEur);
+  spec('a-weken', 'weken', (w) => fInt(w) + ' weken');
+  spec('a-uren', 'uren', fInt);
+  spec('a-wat', 'wat', (t) => t);
+
+  dash.draw('a-aandeel', (el) => {
+    const r = gekozen(); const v = vormRij();
+    el.textContent = r && v && r.subsidie ? fPct1(v.prijs / r.subsidie) : '—';
+  });
+
+  dash.draw('a-mail', (el) => {
+    el.replaceChildren();
+    const r = gekozen(); const v = vormRij();
+    const gd = dash.data('gemeente');
+    const g = gd.status === 'ok' && gd.data[0] ? gd.data[0] : null;
+    if (!r || !v || !g) { el.textContent = '—'; return; }
+    const body = [
+      'Graag vragen wij een impactstudie aan bij Plusmaat Impact.',
+      '',
+      'Gemeente: ' + g.gemeente,
+      'Instelling: ' + r.instelling + ' (' + r.type + ')',
+      'Categorie: ' + r.categorie,
+      'Subsidie ' + g.jaar + ' (begroting): ' + (r.subsidie == null ? 'onbekend' : fEur(r.subsidie)),
+      'Huidige impactstatus: ' + r.status,
+      '',
+      'Gewenste studievorm: ' + v.studievorm + ' (indicatief ' + fEur(v.prijs) + ' excl. btw, ca. ' + fInt(v.weken) + ' weken)',
+      '',
+      'Contactpersoon gemeente:',
+      'Gewenste startdatum:',
+    ].join('\n');
+    const a = document.createElement('a');
+    a.className = 'pm-link';
+    a.href = 'mailto:?subject=' + encodeURIComponent('Aanvraag impactstudie: ' + r.instelling) + '&body=' + encodeURIComponent(body);
+    a.textContent = 'Aanvraag opstellen in e-mail';
+    el.appendChild(a);
+  });
+
+  const named = document.getElementById(location.hash.slice(1));
+  if (named && named.id !== 'aanvraag') requestAnimationFrame(() => named.scrollIntoView());
+})();
+</script>
+
+</main>
+<footer class="site-foot">Plusmaat Impact · Subsidiemonitor. Bronnen: gemeentebegrotingen, CBS (Iv3, bevolking), VNG/Waar staat je gemeente (AMIGO), AlleCijfers.</footer>
+</body>
+</html>

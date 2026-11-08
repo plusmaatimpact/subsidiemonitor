@@ -1,0 +1,83 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "vergelijking": "Den Haag",
+  "rang": 1,
+  "amigoIntegraal": 0.89,
+  "amigoSociaal": 0.84,
+  "amigoSES": 0.91,
+  "motivering": "Hoogste gelijkenis op alle AMIGO-profielen; G4, centrumgemeente opvang en beschermd wonen."
+ },
+ {
+  "gemeente": "Rotterdam",
+  "vergelijking": "Amsterdam",
+  "rang": 2,
+  "amigoIntegraal": null,
+  "amigoSociaal": null,
+  "amigoSES": null,
+  "motivering": "Niet in de AMIGO-top 15, wel enige andere gemeente van vergelijkbare omvang met dezelfde centrumfuncties (G4)."
+ },
+ {
+  "gemeente": "Rotterdam",
+  "vergelijking": "Arnhem",
+  "rang": 3,
+  "amigoIntegraal": 0.72,
+  "amigoSociaal": 0.61,
+  "amigoSES": null,
+  "motivering": "Vergelijkbaar integraal en sociaal profiel; centrumgemeente met regionale opvang en cultuurfunctie (G40)."
+ },
+ {
+  "gemeente": "Den Haag",
+  "vergelijking": "Rotterdam",
+  "rang": 1,
+  "amigoIntegraal": 0.89,
+  "amigoSociaal": 0.84,
+  "amigoSES": 0.91,
+  "motivering": "Hoogste gelijkenis op alle AMIGO-profielen; G4, centrumgemeente opvang en beschermd wonen."
+ },
+ {
+  "gemeente": "Den Haag",
+  "vergelijking": "Amsterdam",
+  "rang": 2,
+  "amigoIntegraal": null,
+  "amigoSociaal": 0.51,
+  "amigoSES": null,
+  "motivering": "Zwakkere sociale gelijkenis, maar G4 met vergelijkbare omvang, cultuur- en opvangfunctie."
+ },
+ {
+  "gemeente": "Den Haag",
+  "vergelijking": "Arnhem",
+  "rang": 3,
+  "amigoIntegraal": 0.72,
+  "amigoSociaal": 0.69,
+  "amigoSES": null,
+  "motivering": "Hoogste gelijkenis buiten de G4 op integraal en sociaal profiel; centrumgemeente (G40)."
+ },
+ {
+  "gemeente": "Delft",
+  "vergelijking": "Leiden",
+  "rang": 1,
+  "amigoIntegraal": 0.85,
+  "amigoSociaal": 0.95,
+  "amigoSES": 0.98,
+  "motivering": "Studentenstad van vergelijkbare omvang in Zuid-Holland; hoogste gelijkenis op sociaal en SES-profiel."
+ },
+ {
+  "gemeente": "Delft",
+  "vergelijking": "Nijmegen",
+  "rang": 2,
+  "amigoIntegraal": 0.88,
+  "amigoSociaal": 0.93,
+  "amigoSES": 0.9,
+  "motivering": "Universiteitsstad met centrumfunctie; hoge gelijkenis op alle profielen."
+ },
+ {
+  "gemeente": "Delft",
+  "vergelijking": "Groningen",
+  "rang": 3,
+  "amigoIntegraal": 0.8,
+  "amigoSociaal": 0.92,
+  "amigoSES": 0.88,
+  "motivering": "Universiteitsstad met regionale functie; groter dan Delft, dus per inwoner vergelijken."
+ }
+]

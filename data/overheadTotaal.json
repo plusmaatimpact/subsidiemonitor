@@ -1,0 +1,92 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "overhead": 614089000,
+  "directeLasten": 4281601000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Den Haag",
+  "overhead": 304873000,
+  "directeLasten": 3182153000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Delft",
+  "overhead": 60422000,
+  "directeLasten": 482597000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Amsterdam",
+  "overhead": 610604000,
+  "directeLasten": 6219529000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Utrecht",
+  "overhead": 619738000,
+  "directeLasten": 1412819000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Arnhem",
+  "overhead": 98012000,
+  "directeLasten": 955331000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Tilburg",
+  "overhead": 119662000,
+  "directeLasten": 1096879000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Schiedam",
+  "overhead": 30852000,
+  "directeLasten": 328562000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Zaanstad",
+  "overhead": 80124000,
+  "directeLasten": 698868000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Leiden",
+  "overhead": 105213000,
+  "directeLasten": 615078000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Nijmegen",
+  "overhead": 214076000,
+  "directeLasten": 791820000,
+  "opmerking": "Overhead geboekt op 0.4 én 0.8 (overige baten en lasten)"
+ },
+ {
+  "gemeente": "Groningen",
+  "overhead": 136167000,
+  "directeLasten": 1279692000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Zwolle",
+  "overhead": 72434000,
+  "directeLasten": 696831000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Eindhoven",
+  "overhead": 137556000,
+  "directeLasten": 1173057000,
+  "opmerking": ""
+ },
+ {
+  "gemeente": "Haarlem",
+  "overhead": 97499000,
+  "directeLasten": 696108000,
+  "opmerking": ""
+ }
+]

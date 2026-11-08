@@ -1,0 +1,842 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 196451000,
+  "overdrachten": 153244000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Sport",
+  "lasten": 84432000,
+  "overdrachten": 16852000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 193697000,
+  "overdrachten": 45666000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 317586000,
+  "overdrachten": 10295000,
+  "bijdrageGR": 11011000
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Volksgezondheid",
+  "lasten": 60358000,
+  "overdrachten": 3301000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 157180000,
+  "overdrachten": 29375000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Economie",
+  "lasten": 32362000,
+  "overdrachten": 12911000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 5048220000,
+  "overdrachten": 365904000,
+  "bijdrageGR": 361942000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 163031000,
+  "overdrachten": -36000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Sport",
+  "lasten": 78334000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 187130000,
+  "overdrachten": 37170000,
+  "bijdrageGR": 1457000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 162793000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Volksgezondheid",
+  "lasten": 107818000,
+  "overdrachten": 0,
+  "bijdrageGR": 6838000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 108636000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Economie",
+  "lasten": 61398000,
+  "overdrachten": 9282000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 3565291000,
+  "overdrachten": 84132000,
+  "bijdrageGR": 89637000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 20078000,
+  "overdrachten": 9787000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Sport",
+  "lasten": 6367000,
+  "overdrachten": 3015000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 16380000,
+  "overdrachten": 10212000,
+  "bijdrageGR": 1000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 30913000,
+  "overdrachten": 7623000,
+  "bijdrageGR": 1421000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Volksgezondheid",
+  "lasten": 6444000,
+  "overdrachten": 3971000,
+  "bijdrageGR": 1695000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 8968000,
+  "overdrachten": 6263000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Economie",
+  "lasten": 7938000,
+  "overdrachten": 4048000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 558508000,
+  "overdrachten": 50157000,
+  "bijdrageGR": 35918000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 277071000,
+  "overdrachten": 162046000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Sport",
+  "lasten": 109521000,
+  "overdrachten": 7704000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 287594000,
+  "overdrachten": 7041000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 298180000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Volksgezondheid",
+  "lasten": 133982000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 168437000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Economie",
+  "lasten": 305177000,
+  "overdrachten": 8020000,
+  "bijdrageGR": 1455000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 7190980000,
+  "overdrachten": 240495000,
+  "bijdrageGR": 155560000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 95861000,
+  "overdrachten": 76774000,
+  "bijdrageGR": 3849000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Sport",
+  "lasten": 36028000,
+  "overdrachten": 1959000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 75859000,
+  "overdrachten": 44555000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 138185000,
+  "overdrachten": 6878000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Volksgezondheid",
+  "lasten": 19351000,
+  "overdrachten": 8069000,
+  "bijdrageGR": 2391000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 45311000,
+  "overdrachten": 31630000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Economie",
+  "lasten": 28039000,
+  "overdrachten": 20164000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 2082512000,
+  "overdrachten": 270844000,
+  "bijdrageGR": 73078000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 43045000,
+  "overdrachten": 28767000,
+  "bijdrageGR": 1318000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Sport",
+  "lasten": 26502000,
+  "overdrachten": 20955000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 33631000,
+  "overdrachten": 14590000,
+  "bijdrageGR": 68000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 53168000,
+  "overdrachten": 8156000,
+  "bijdrageGR": 984000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Volksgezondheid",
+  "lasten": 11977000,
+  "overdrachten": 694000,
+  "bijdrageGR": 8991000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 24850000,
+  "overdrachten": 16357000,
+  "bijdrageGR": 2973000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Economie",
+  "lasten": 9378000,
+  "overdrachten": 3447000,
+  "bijdrageGR": 586000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 1072354000,
+  "overdrachten": 109344000,
+  "bijdrageGR": 109382000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 49034000,
+  "overdrachten": 27849000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Sport",
+  "lasten": 35628000,
+  "overdrachten": 967000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 76946000,
+  "overdrachten": 35762000,
+  "bijdrageGR": 282000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 64838000,
+  "overdrachten": 12492000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Volksgezondheid",
+  "lasten": 16682000,
+  "overdrachten": 1716000,
+  "bijdrageGR": 11534000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 29231000,
+  "overdrachten": 5056000,
+  "bijdrageGR": 1046000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Economie",
+  "lasten": 60618000,
+  "overdrachten": 3382000,
+  "bijdrageGR": 1129000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 1244220000,
+  "overdrachten": 115460000,
+  "bijdrageGR": 154511000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 12210000,
+  "overdrachten": 9499000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Sport",
+  "lasten": 8772000,
+  "overdrachten": 5561000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 12618000,
+  "overdrachten": 6411000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 2649000,
+  "overdrachten": 1050000,
+  "bijdrageGR": 857000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Volksgezondheid",
+  "lasten": 4547000,
+  "overdrachten": 545000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 12179000,
+  "overdrachten": 0,
+  "bijdrageGR": 77000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Economie",
+  "lasten": 2619000,
+  "overdrachten": 873000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 372769000,
+  "overdrachten": 26743000,
+  "bijdrageGR": 169420000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 19027000,
+  "overdrachten": 8809000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Sport",
+  "lasten": 11916000,
+  "overdrachten": 851000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 24252000,
+  "overdrachten": 3612000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 25379000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Volksgezondheid",
+  "lasten": 7615000,
+  "overdrachten": 0,
+  "bijdrageGR": 7467000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 24707000,
+  "overdrachten": 12276000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Economie",
+  "lasten": 5349000,
+  "overdrachten": 1500000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 798489000,
+  "overdrachten": 32512000,
+  "bijdrageGR": 49086000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 29237000,
+  "overdrachten": 8890000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Sport",
+  "lasten": 19043000,
+  "overdrachten": 1006000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 17671000,
+  "overdrachten": 2270000,
+  "bijdrageGR": 45000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 54032000,
+  "overdrachten": 14396000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Volksgezondheid",
+  "lasten": 12107000,
+  "overdrachten": 1811000,
+  "bijdrageGR": 4983000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 18562000,
+  "overdrachten": 6729000,
+  "bijdrageGR": 2740000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Economie",
+  "lasten": 12832000,
+  "overdrachten": 4725000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 739934000,
+  "overdrachten": 51528000,
+  "bijdrageGR": 78466000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 38254000,
+  "overdrachten": 30171000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Sport",
+  "lasten": 18987000,
+  "overdrachten": 3487000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 43082000,
+  "overdrachten": 29221000,
+  "bijdrageGR": 645000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 84950000,
+  "overdrachten": 34612000,
+  "bijdrageGR": 1645000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Volksgezondheid",
+  "lasten": 14496000,
+  "overdrachten": 5236000,
+  "bijdrageGR": 8784000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 14743000,
+  "overdrachten": 11620000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Economie",
+  "lasten": 5654000,
+  "overdrachten": 2199000,
+  "bijdrageGR": 208000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 1015769000,
+  "overdrachten": 179254000,
+  "bijdrageGR": 85359000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 70230000,
+  "overdrachten": 32650000,
+  "bijdrageGR": 2822000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Sport",
+  "lasten": 40089000,
+  "overdrachten": 3972000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 28496000,
+  "overdrachten": 16033000,
+  "bijdrageGR": 1000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 114714000,
+  "overdrachten": 24780000,
+  "bijdrageGR": 620000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Volksgezondheid",
+  "lasten": 17569000,
+  "overdrachten": 5881000,
+  "bijdrageGR": 10081000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 25391000,
+  "overdrachten": 12684000,
+  "bijdrageGR": 792000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Economie",
+  "lasten": 21293000,
+  "overdrachten": 10382000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 1490146000,
+  "overdrachten": 249338000,
+  "bijdrageGR": 51735000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 23846000,
+  "overdrachten": 17414000,
+  "bijdrageGR": -137000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Sport",
+  "lasten": 9234000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 31075000,
+  "overdrachten": 0,
+  "bijdrageGR": 241000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 104085000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Volksgezondheid",
+  "lasten": 6956000,
+  "overdrachten": 0,
+  "bijdrageGR": 6570000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 14832000,
+  "overdrachten": 41000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Economie",
+  "lasten": 6520000,
+  "overdrachten": 1073000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 786202000,
+  "overdrachten": 23085000,
+  "bijdrageGR": 34901000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 57823000,
+  "overdrachten": 5095000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Sport",
+  "lasten": 41649000,
+  "overdrachten": 2019000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 57726000,
+  "overdrachten": 34355000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 64138000,
+  "overdrachten": 11462000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Volksgezondheid",
+  "lasten": 19553000,
+  "overdrachten": 3782000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 38702000,
+  "overdrachten": 21700000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Economie",
+  "lasten": 26813000,
+  "overdrachten": 0,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 1330109000,
+  "overdrachten": 151352000,
+  "bijdrageGR": 58701000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "lasten": 43595000,
+  "overdrachten": 5911000,
+  "bijdrageGR": 1621000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Sport",
+  "lasten": 22384000,
+  "overdrachten": 14459000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Welzijn en burgerparticipatie",
+  "lasten": 31569000,
+  "overdrachten": 1348000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Opvang en beschermd wonen",
+  "lasten": 70248000,
+  "overdrachten": 6190000,
+  "bijdrageGR": 3542000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Volksgezondheid",
+  "lasten": 12226000,
+  "overdrachten": 6778000,
+  "bijdrageGR": 4728000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Onderwijsbeleid",
+  "lasten": 14262000,
+  "overdrachten": 7227000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Economie",
+  "lasten": 6521000,
+  "overdrachten": 1999000,
+  "bijdrageGR": 0
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Totaal alle taakvelden",
+  "lasten": 808683000,
+  "overdrachten": 65124000,
+  "bijdrageGR": 52754000
+ }
+]

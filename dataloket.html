@@ -1,0 +1,536 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plusmaat Dataloket</title>
+<meta name="description" content="Formats, sjablonen en controle voor het aanleveren van gegevens aan de Plusmaat Subsidiemonitor.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+/* Layout: één werkkolom; bovenaan de stappen, dan per gegevenssoort het format + upload, onderaan het logboek van aanleveringen. */
+:root{
+  --bg:#FAFAF9; --surface:#FFFFFF; --sunk:#F1F4F7; --line:#E2E8F0; --fg:#0B2545; --muted:#46566B;
+  --accent:#14B8A6; --accent-ink:#0F766E; --accent-soft:#E3F7F3; --on-accent:#0B2545;
+  --ok:#0F766E; --warn:#B45309; --warn-soft:#FEF3C7; --bad:#B42318; --bad-soft:#FDE8E6; --focus:#0F766E;
+  --f-display:"Poppins", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Source Sans 3", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --r:8px; --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#08182E; --surface:#0E2240; --sunk:#0B1C36; --line:#20375A; --fg:#E8EEF5; --muted:#A3B3C7;
+  --accent:#14B8A6; --accent-ink:#5EEAD4; --accent-soft:#0F3A3F; --on-accent:#0B2545;
+  --ok:#5EEAD4; --warn:#FBBF24; --warn-soft:#3A2E10; --bad:#FCA5A5; --bad-soft:#3B1A1D; --focus:#F59E0B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#08182E; --surface:#0E2240; --sunk:#0B1C36; --line:#20375A; --fg:#E8EEF5; --muted:#A3B3C7;
+  --accent:#14B8A6; --accent-ink:#5EEAD4; --accent-soft:#0F3A3F; --on-accent:#0B2545;
+  --ok:#5EEAD4; --warn:#FBBF24; --warn-soft:#3A2E10; --bad:#FCA5A5; --bad-soft:#3B1A1D; --focus:#F59E0B; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:var(--s6) var(--s7);display:flex;flex-direction:column;gap:var(--s6)}
+h1,h2,h3{font-family:var(--f-display);font-weight:600;text-wrap:balance;margin:0;line-height:1.2}
+h1{font-size:1.9rem} h2{font-size:1.25rem} h3{font-size:1rem}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:.875rem}
+.eyebrow{font-family:var(--f-display);font-weight:500;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-ink)}
+.mark{display:inline-flex;align-items:flex-end;gap:3px;height:22px;margin-right:var(--s2);vertical-align:-3px}
+.mark i{display:block;width:5px;background:var(--fg);opacity:.85}
+.mark i:nth-child(1){height:30%}.mark i:nth-child(2){height:50%}.mark i:nth-child(3){height:72%}.mark i:nth-child(4){height:100%;background:var(--accent);opacity:1}
+header{display:flex;flex-direction:column;gap:var(--s3)}
+header p{max-width:66ch}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:var(--s3);list-style:none;padding:0;margin:0;counter-reset:st}
+.steps li{counter-increment:st;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s3) var(--s4);display:flex;flex-direction:column;gap:2px;min-width:0}
+.steps li::before{content:counter(st);font-family:var(--f-mono);font-size:.8rem;color:var(--accent-ink)}
+.steps b{font-weight:600}
+.tabs{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.tab{font:inherit;font-size:.95rem;padding:7px 14px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.tab[aria-selected="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.tab .cnt{font-family:var(--f-mono);font-size:.75rem;margin-left:6px;opacity:.7}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,.drop:focus-within{outline:3px solid var(--focus);outline-offset:2px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:var(--s5);display:flex;flex-direction:column;gap:var(--s5);min-width:0}
+.panel-head{display:flex;justify-content:space-between;gap:var(--s4);flex-wrap:wrap;align-items:flex-start}
+.panel-head > div{display:flex;flex-direction:column;gap:var(--s2);max-width:62ch;min-width:0}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:var(--s3)}
+.fact{background:var(--sunk);border-radius:var(--r);padding:var(--s3);display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact .k{font-size:.75rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-family:var(--f-display);font-weight:500}
+.btn{font:inherit;font-weight:600;font-size:.95rem;padding:9px 16px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+.btn:hover{border-color:var(--accent-ink)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btns{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center}
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r)}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th{text-align:left;font-family:var(--f-display);font-weight:500;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);background:var(--sunk);padding:8px 10px;white-space:nowrap}
+td{padding:8px 10px;border-top:1px solid var(--line);vertical-align:top}
+td.col{font-family:var(--f-mono);font-size:.85rem;white-space:nowrap}
+.req{font-family:var(--f-mono);font-size:.75rem;padding:1px 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent-ink);white-space:nowrap}
+.opt{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);white-space:nowrap}
+.vals{display:flex;flex-wrap:wrap;gap:4px}
+.vals code,.code{font-family:var(--f-mono);font-size:.78rem;background:var(--sunk);border:1px solid var(--line);border-radius:4px;padding:0 5px;white-space:nowrap}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:var(--s5);display:flex;flex-direction:column;align-items:center;gap:var(--s2);text-align:center;background:var(--sunk);cursor:pointer}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.drop input{position:absolute;width:1px;height:1px;opacity:0}
+.result{display:flex;flex-direction:column;gap:var(--s4)}
+.summary{display:flex;flex-wrap:wrap;gap:var(--s2)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.85rem;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--sunk);color:var(--fg)}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.pill.ok{background:var(--accent-soft);color:var(--ok)}.pill.ok::before{background:var(--ok)}
+.pill.warn{background:var(--warn-soft);color:var(--warn)}.pill.warn::before{background:var(--warn)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}.pill.bad::before{background:var(--bad)}
+.issues td.lvl-fout{color:var(--bad);font-weight:600}
+.issues td.lvl-let{color:var(--warn);font-weight:600}
+.note{border-left:3px solid var(--accent);background:var(--sunk);padding:var(--s3) var(--s4);border-radius:0 var(--r) var(--r) 0}
+label.field{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted)}
+textarea,input[type=text]{font:inherit;font-size:.95rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;width:100%;box-sizing:border-box}
+.log td.st{white-space:nowrap}
+.empty{padding:var(--s5);text-align:center;color:var(--muted)}
+.claude{display:flex;flex-wrap:wrap;gap:var(--s3);align-items:center}
+.claude .code{font-size:.9rem;padding:3px 8px;white-space:normal}
+details summary{cursor:pointer;font-weight:600}
+.btn.small{font-size:.85rem;padding:5px 10px}
+.btn.danger{border-color:var(--bad);color:var(--bad)}
+.btn.danger.solid{background:var(--bad);color:var(--bg)}
+.confirm{display:flex;flex-wrap:wrap;gap:var(--s2);align-items:center;background:var(--bad-soft);border-radius:var(--r);padding:var(--s3)}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:var(--s4)}
+select.inp{font:inherit;font-size:.95rem;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:8px 10px;width:100%}
+.tab.del{border-color:var(--bad);color:var(--bad)}
+.tab.del[aria-selected="true"]{background:var(--bad);color:var(--bg);border-color:var(--bad)}
+.nums{font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion: no-preference){.drop,.btn,.tab{transition:background .15s,border-color .15s}}
+.site-top{border-bottom:1px solid var(--line);background:var(--surface)}
+.site-top-in{max-width:1040px;margin:0 auto;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.logo{display:inline-flex;align-items:center;gap:10px;text-decoration:none;color:var(--fg);font-family:var(--f-display);font-weight:600;line-height:1.05;font-size:.95rem}
+.site-nav{display:flex;gap:4px;flex-wrap:wrap}
+.site-nav a{text-decoration:none;padding:6px 12px;border-radius:999px;font-size:.9rem;color:var(--muted)}
+.site-nav a[aria-current="page"]{background:var(--fg);color:var(--bg)}
+a.btn{text-decoration:none}
+.fname{font-family:var(--f-mono);font-size:.85rem}
+</style>
+<script src="assets/config.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<header class="site-top"><div class="site-top-in">
+  <a class="logo" href="index.html"><span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>Plusmaat<br>Impact</span></a>
+  <nav class="site-nav" aria-label="Hoofdmenu"><a href="index.html">Monitor</a><a href="dataloket.html" aria-current="page">Dataloket</a></nav>
+</div></header>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Plusmaat Impact · Subsidiemonitor</p>
+    <h1>Dataloket</h1>
+    <p class="muted">Lever hier nieuwe of gewijzigde gegevens aan. Kies de soort gegevens, download het sjabloon, vul het in en controleer het bestand op deze pagina. Klopt alles, upload het dan in de map <span class="code">aanleveringen</span> op GitHub. Een automatische controle verwerkt het bestand en de site is binnen een paar minuten bijgewerkt.</p>
+    <ol class="steps" aria-label="Werkwijze">
+      <li><b>Kies de gegevens</b><span class="small muted">Elke soort heeft een eigen format.</span></li>
+      <li><b>Download het sjabloon</b><span class="small muted">Excel met de juiste kolommen, uitleg en een voorbeeld.</span></li>
+      <li><b>Controleer hier</b><span class="small muted">Fouten en waarschuwingen per rij; er wordt nog niets verstuurd.</span></li>
+      <li><b>Upload op GitHub</b><span class="small muted">In de map aanleveringen; de site werkt zichzelf bij.</span></li>
+    </ol>
+  </header>
+
+  <section aria-labelledby="kies">
+    <h2 id="kies" style="margin-bottom:var(--s3)">Welke gegevens lever je aan?</h2>
+    <div class="tabs" role="tablist" id="tabs"></div>
+  </section>
+
+  <section class="panel" id="panel" aria-live="polite"></section>
+
+  <section class="panel" aria-labelledby="loghead">
+    <div class="panel-head"><div>
+      <h2 id="loghead">Verwerkte aanleveringen</h2>
+      <p class="muted small">Wat de automatische verwerking met elke upload heeft gedaan, nieuwste eerst. Een afgewezen bestand verandert niets aan de site; de reden staat erbij.</p>
+    </div></div>
+    <div class="tablebox">
+      <table class="log">
+        <thead><tr><th>Verwerkt op</th><th>Bestand</th><th>Gegevens</th><th>Gemeente</th><th>Rijen</th><th>Resultaat</th><th>Toelichting</th></tr></thead>
+        <tbody id="logbody"><tr><td colspan="7" class="empty">Nog geen aanleveringen verwerkt.</td></tr></tbody>
+      </table>
+    </div>
+    <p class="small muted">Een verwerking ongedaan maken? Elke wijziging staat in de geschiedenis van GitHub en is daar terug te draaien (zie de handleiding in README.md).</p>
+  </section>
+
+  <section class="panel" aria-labelledby="zelf">
+    <h2 id="zelf">Gegevens die je niet hoeft aan te leveren</h2>
+    <p class="muted">Deze gegevens worden opgehaald uit openbare bronnen met de GitHub-actie <span class="code">Vernieuw CBS-gegevens</span>.</p>
+    <div class="tablebox"><table>
+      <thead><tr><th>Gegevens</th><th>Bron</th><th>Wanneer vernieuwen</th></tr></thead>
+      <tbody>
+        <tr><td>Lasten per taakveld (Iv3) en toegerekende overhead</td><td>CBS, Gemeenten onbewerkte Iv3-data</td><td>Na elke nieuwe CBS-plaatsing, rond maart en september</td></tr>
+        <tr><td>Inwoners per gemeente en per centrumregio</td><td>CBS, Bevolkingsontwikkeling per maand (37230ned)</td><td>Jaarlijks, per 1 januari</td></tr>
+        <tr><td>AMIGO-gelijkenisscores</td><td>VNG / Waar staat je gemeente, AMIGO</td><td>Lever aan via Vergelijkingsgemeenten</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const DOMEINEN = ['Zorg & welzijn','Cultuur','Jeugd & onderwijs','Sport & bewegen','Participatie & samenleving','Werk & inkomen','Armoede & schulden','Wonen & leefomgeving','Economie & duurzaamheid','Veiligheid','Overig'];
+  const TYPES = ['Stichting','Vereniging','B.V.','Coöperatie','Regeling / budgetpost','Onbekend (niet uit naam af te leiden)'];
+  const STATUS = ['Aangevraagd','In uitvoering','Afgerond'];
+  const VORMEN = ['Quickscan','Standaard MKBA','Uitgebreide MKBA','Jaarlijkse update'];
+
+  const SPEC = [
+    { id:'subsidieposten', naam:'Subsidieposten', bestand:'subsidieposten',
+      wat:'De lijst van gesubsidieerde instellingen en regelingen uit de begroting van één gemeente. Eén rij per subsidiepost.',
+      werking:'Vervangt alle posten van dezelfde gemeente en hetzelfde begrotingsjaar. Lever dus altijd de volledige lijst aan, niet alleen de wijzigingen.',
+      raakt:'Gemeentedashboard (register, kerncijfers, grafieken) en de hoofdpagina (kaarten, vergelijking en duiding).',
+      kolommen:[
+        {k:'gemeente', req:1, type:'tekst', uitleg:'Naam van de gemeente zoals op de hoofdpagina.', vb:'Rotterdam'},
+        {k:'jaar', req:1, type:'jaar', uitleg:'Begrotingsjaar, vier cijfers.', vb:'2027'},
+        {k:'instelling', req:1, type:'tekst', uitleg:'Naam zoals in de begroting. Dezelfde instelling in meerdere programma’s = meerdere rijen.', vb:'St. House of Hope'},
+        {k:'categorie', req:1, type:'tekst', uitleg:'Programma of categorie zoals in de begroting.', vb:'Zorg, welzijn en wijkteams'},
+        {k:'domein', req:1, type:'keuze', waarden:DOMEINEN, uitleg:'Plusmaat-domein, voor vergelijking tussen gemeenten.', vb:'Zorg & welzijn'},
+        {k:'type', req:0, type:'keuze', waarden:TYPES, uitleg:'Rechtsvorm. Leeg = Onbekend. Regelingen en budgetposten zijn geen organisatie.', vb:'Stichting'},
+        {k:'bedrag', req:0, type:'euro', min:0, uitleg:'Bedrag in hele euro’s (niet in duizenden). Leeg als de begroting geen bedrag noemt.', vb:'134000'},
+        {k:'bron', req:0, type:'tekst', uitleg:'Document en pagina, voor de verantwoording.', vb:'Begroting 2027, p. 590'}
+      ],
+      voorbeeld:[['Rotterdam',2027,'St. House of Hope','Zorg, welzijn en wijkteams','Zorg & welzijn','Stichting',134000,'Begroting 2027, p. 597'],['Rotterdam',2027,'Bibliotheek','Cultuur','Cultuur','Onbekend (niet uit naam af te leiden)',26125000,'Begroting 2027, p. 591']],
+      extra:(rows, add) => {
+        const sleutel = new Map();
+        rows.forEach((r, i) => { const s = [r.gemeente, r.jaar, r.instelling, r.categorie].join('|').toLowerCase(); if (sleutel.has(s)) add('let', i, 'instelling', `Zelfde instelling en categorie als rij ${sleutel.get(s)}. Controleer of dit twee aparte posten zijn.`); else sleutel.set(s, i + 2); });
+        const combos = new Set(rows.map((r) => r.gemeente + ' ' + r.jaar));
+        if (combos.size > 1) add('let', null, 'gemeente', `Het bestand bevat ${combos.size} combinaties van gemeente en jaar (${[...combos].join(', ')}). Elke combinatie vervangt de bestaande posten.`);
+      }
+    },
+    { id:'gemeente', naam:'Gemeentegegevens', bestand:'gemeentegegevens',
+      wat:'Basisgegevens per gemeente: inwoners, begrotingsjaar, bron en reikwijdte van de subsidielijst. Voor een nieuwe gemeente of een nieuw jaar.',
+      werking:'Werkt de rij van elke genoemde gemeente bij; een onbekende gemeente wordt toegevoegd en krijgt een eigen dashboard.',
+      raakt:'Kop en toelichting van het gemeentedashboard; kaarten en per-inwonercijfers op de hoofdpagina.',
+      kolommen:[
+        {k:'gemeente', req:1, type:'tekst', uitleg:'Naam van de gemeente.', vb:'Delft'},
+        {k:'inwoners', req:1, type:'geheel', min:1, uitleg:'Aantal inwoners op 1 januari van het jaar.', vb:'110089'},
+        {k:'jaar', req:1, type:'jaar', uitleg:'Begrotingsjaar van de subsidielijst.', vb:'2027'},
+        {k:'bron', req:1, type:'tekst', uitleg:'Document waar de subsidielijst uit komt.', vb:'Programmabegroting 2027, p. 268–272'},
+        {k:'reikwijdte', req:1, type:'tekst', uitleg:'Wat de lijst wel en niet bevat.', vb:'Alleen subsidies op naam in de begroting'},
+        {k:'opmerking', req:0, type:'tekst', uitleg:'Bijzonderheden over de data.', vb:'KesslerPerspektief staat er twee keer in'}
+      ],
+      voorbeeld:[['Delft',110089,2027,'Programmabegroting 2027, p. 268–272','Alleen subsidies op naam in de begroting','']]
+    },
+    { id:'studies', naam:'Impactstudies', bestand:'impactstudies',
+      wat:'Aangevraagde, lopende en afgeronde Plusmaat-impactstudies. Eén rij per studie.',
+      werking:'Werkt de studie van dezelfde gemeente en instelling bij, of voegt hem toe. De impactstatus in de dashboards komt uit deze lijst.',
+      raakt:'Impactstatus, rendement en advies in het register; kerncijfers op de hoofdpagina.',
+      kolommen:[
+        {k:'gemeente', req:1, type:'tekst', uitleg:'Gemeente van de instelling.', vb:'Rotterdam'},
+        {k:'instelling', req:1, type:'tekst', uitleg:'Precies zoals in de subsidieposten, anders wordt de studie niet gekoppeld.', vb:'St. House of Hope'},
+        {k:'status', req:1, type:'keuze', waarden:STATUS, uitleg:'Stand van de studie.', vb:'Afgerond'},
+        {k:'studievorm', req:1, type:'keuze', waarden:VORMEN, uitleg:'Soort studie.', vb:'Uitgebreide MKBA'},
+        {k:'rendement', req:0, type:'decimaal', min:0, uitleg:'Maatschappelijke baten per euro; alleen bij Afgerond. Komma of punt mag.', vb:'3,72'},
+        {k:'nettoBatenGemeente', req:0, type:'euro', uitleg:'Netto baten die bij de gemeente zelf terechtkomen, per jaar.', vb:'1016000'},
+        {k:'datum', req:0, type:'datum', uitleg:'Datum van aanvraag of oplevering.', vb:'2026-06-30'},
+        {k:'opmerking', req:0, type:'tekst', uitleg:'Vrije toelichting.', vb:''}
+      ],
+      voorbeeld:[['Rotterdam','St. House of Hope','Afgerond','Uitgebreide MKBA',3.72,1016000,'2026-06-30','']],
+      extra:(rows, add) => {
+        rows.forEach((r, i) => {
+          if (r.rendement != null && r.status !== 'Afgerond') add('let', i, 'rendement', 'Rendement ingevuld bij een studie die nog niet is afgerond.');
+          if (r.status === 'Afgerond' && r.rendement == null) add('let', i, 'rendement', 'Afgeronde studie zonder rendement; het dashboard toont dan een streepje.');
+        });
+      }
+    },
+    { id:'peers', naam:'Vergelijkingsgemeenten', bestand:'vergelijkingsgemeenten',
+      wat:'Per gemeente de drie gemeenten waarmee zij wordt vergeleken, met AMIGO-scores en motivering.',
+      werking:'Vervangt de vergelijkingsgemeenten van elke genoemde gemeente.',
+      raakt:'Tabblad Vergelijkbare gemeenten op de hoofdpagina.',
+      kolommen:[
+        {k:'gemeente', req:1, type:'tekst', uitleg:'De gemeente die je vergelijkt.', vb:'Delft'},
+        {k:'vergelijking', req:1, type:'tekst', uitleg:'De vergelijkingsgemeente.', vb:'Leiden'},
+        {k:'rang', req:1, type:'geheel', min:1, max:3, uitleg:'1, 2 of 3; elke rang één keer per gemeente.', vb:'1'},
+        {k:'amigoIntegraal', req:0, type:'decimaal', min:0, max:1, uitleg:'AMIGO-gelijkenis integraal profiel (0–1).', vb:'0,85'},
+        {k:'amigoSociaal', req:0, type:'decimaal', min:0, max:1, uitleg:'AMIGO-gelijkenis sociaal domein (0–1).', vb:'0,95'},
+        {k:'amigoSES', req:0, type:'decimaal', min:0, max:1, uitleg:'AMIGO-gelijkenis SES (0–1).', vb:'0,98'},
+        {k:'motivering', req:1, type:'tekst', uitleg:'Waarom deze gemeente vergelijkbaar is.', vb:'Studentenstad van vergelijkbare omvang'}
+      ],
+      voorbeeld:[['Delft','Leiden',1,0.85,0.95,0.98,'Studentenstad van vergelijkbare omvang in Zuid-Holland']],
+      extra:(rows, add) => {
+        const per = {};
+        rows.forEach((r, i) => { const k = r.gemeente + '|' + r.rang; if (per[k] != null) add('fout', i, 'rang', `Rang ${r.rang} komt voor ${r.gemeente} al voor in rij ${per[k]}.`); else per[k] = i + 2; if (r.gemeente && r.vergelijking && r.gemeente.toLowerCase() === r.vergelijking.toLowerCase()) add('fout', i, 'vergelijking', 'Een gemeente kan niet met zichzelf vergeleken worden.'); });
+      }
+    },
+    { id:'regio', naam:'Centrumregio’s', bestand:'centrumregios',
+      wat:'De regio waarvoor een gemeente centrumgemeente is voor maatschappelijke opvang en beschermd wonen.',
+      werking:'Werkt de regio van elke genoemde centrumgemeente bij. Claude rekent het inwonertal van de regio na met CBS-cijfers.',
+      raakt:'Correctie voor centrumtaken op het tabblad Vergelijkbare gemeenten.',
+      kolommen:[
+        {k:'gemeente', req:1, type:'tekst', uitleg:'De centrumgemeente.', vb:'Delft'},
+        {k:'regio', req:1, type:'tekst', uitleg:'Naam van de regio.', vb:'Regio Delft-Westland-Oostland'},
+        {k:'gemeenten', req:1, type:'tekst', uitleg:'Alle deelnemende gemeenten, gescheiden door een puntkomma, de centrumgemeente meegerekend.', vb:'Delft; Westland; Pijnacker-Nootdorp; Midden-Delfland'},
+        {k:'inwonersRegio', req:0, type:'geheel', min:1, uitleg:'Optioneel; leeg laten mag, Claude vult het aan.', vb:'307059'},
+        {k:'bron', req:1, type:'tekst', uitleg:'Regeling of document waarin de regio staat.', vb:'Centrumregeling MO/BW DWO'}
+      ],
+      voorbeeld:[['Delft','Regio Delft-Westland-Oostland','Delft; Westland; Pijnacker-Nootdorp; Midden-Delfland',307059,'Begroting Delft, subsidie KesslerPerspektief']],
+      extra:(rows, add) => { rows.forEach((r, i) => { const g = (r.gemeenten || '').split(';').map((x) => x.trim().toLowerCase()).filter(Boolean); if (g.length < 2) add('let', i, 'gemeenten', 'Minder dan twee gemeenten; gebruik een puntkomma tussen de namen.'); else if (r.gemeente && !g.includes(r.gemeente.toLowerCase())) add('let', i, 'gemeenten', 'De centrumgemeente staat zelf niet in de lijst.'); }); }
+    },
+    { id:'studievormen', naam:'Studievormen en prijzen', bestand:'studievormen',
+      wat:'De studievormen van Plusmaat Impact met indicatieve prijs, uren en doorlooptijd.',
+      werking:'Vervangt de hele lijst studievormen.',
+      raakt:'Aanvraagpaneel in elk gemeentedashboard.',
+      kolommen:[
+        {k:'studievorm', req:1, type:'keuze', waarden:VORMEN, uitleg:'Naam van de studievorm.', vb:'Quickscan'},
+        {k:'prijs', req:1, type:'euro', min:0, uitleg:'Indicatieve prijs excl. btw, in hele euro’s.', vb:'7500'},
+        {k:'weken', req:1, type:'geheel', min:1, uitleg:'Doorlooptijd in weken.', vb:'4'},
+        {k:'uren', req:1, type:'geheel', min:1, uitleg:'Geschat aantal uren.', vb:'60'},
+        {k:'wat', req:1, type:'tekst', uitleg:'Eén zin over wat de studie oplevert.', vb:'Eerste beeld van de maatschappelijke waarde'}
+      ],
+      voorbeeld:[['Quickscan',7500,4,60,'Eerste beeld van de maatschappelijke waarde, op basis van bestaande gegevens en kengetallen.']],
+      extra:(rows, add) => { const seen = {}; rows.forEach((r, i) => { if (seen[r.studievorm]) add('fout', i, 'studievorm', `Studievorm staat al in rij ${seen[r.studievorm]}.`); else seen[r.studievorm] = i + 2; }); }
+    }
+    ,
+    { id:'verwijderingen', naam:'Verwijderingen', bestand:'verwijderingen',
+      wat:'Gegevens die uit de dashboards moeten worden gehaald. Eén rij per verwijdering.',
+      werking:'Voert elke rij uit: een hele gemeente, de posten van één instelling, een impactstudie, een vergelijkingsgemeente of een centrumregio. De vorige versie blijft bewaard in de geschiedenis van GitHub.',
+      raakt:'Alle dashboards waarin de gegevens voorkomen.',
+      kolommen:[
+        {k:'wat', req:1, type:'keuze', waarden:['gemeente','posten','studie','vergelijking','regio'], uitleg:'gemeente = alles van die gemeente; posten = alle posten van één instelling; studie = de impactstudie van één instelling; vergelijking = één vergelijkingsgemeente; regio = de centrumregio.', vb:'posten'},
+        {k:'gemeente', req:1, type:'tekst', uitleg:'De gemeente waar het om gaat.', vb:'Delft'},
+        {k:'instelling', req:0, type:'tekst', uitleg:'Verplicht bij posten en studie; precies zoals in de posten.', vb:'Stichting DOK'},
+        {k:'jaar', req:0, type:'jaar', uitleg:'Alleen bij posten: beperk tot één begrotingsjaar.', vb:'2027'},
+        {k:'vergelijking', req:0, type:'tekst', uitleg:'Verplicht bij vergelijking: de vergelijkingsgemeente die eruit moet.', vb:'Groningen'},
+        {k:'reden', req:1, type:'tekst', uitleg:'Waarom het weg moet; komt in het logboek.', vb:'Subsidie per 1 januari beëindigd'}
+      ],
+      voorbeeld:[['posten','Delft','Stichting DOK',2027,'','Subsidie per 1 januari beëindigd']],
+      extra:(rows, add) => { rows.forEach((r, i) => {
+        if ((r.wat === 'posten' || r.wat === 'studie') && !r.instelling) add('fout', i, 'instelling', 'Vul de instelling in bij posten en studie.');
+        if (r.wat === 'vergelijking' && !r.vergelijking) add('fout', i, 'vergelijking', 'Vul de vergelijkingsgemeente in.');
+        if (r.wat === 'gemeente') add('let', i, 'wat', 'Hiermee verdwijnen alle gegevens en het dashboard van ' + r.gemeente + '.');
+      }); }
+    }
+  ];
+
+  const TYPEUITLEG = {tekst:'Tekst', jaar:'Jaartal (bijv. 2027)', keuze:'Eén van de waarden', euro:'Bedrag in euro’s', geheel:'Heel getal', decimaal:'Getal (komma of punt)', datum:'Datum (jjjj-mm-dd)'};
+  const fmtInt = new Intl.NumberFormat('nl-NL', {maximumFractionDigits: 0});
+  const fmtDec = new Intl.NumberFormat('nl-NL', {maximumFractionDigits: 4});
+  const el = (tag, attrs = {}, ...kids) => { const e = document.createElement(tag); for (const [k, v] of Object.entries(attrs)) { if (k === 'class') e.className = v; else if (k === 'text') e.textContent = v; else e.setAttribute(k, v); } kids.flat().forEach((c) => c != null && e.append(c)); return e; };
+
+  // ---------- parsing ----------
+  const norm = (s) => String(s ?? '').trim();
+  const keyOf = (s) => norm(s).toLowerCase().replace(/[\s_\-]/g, '');
+  const parseNumber = (v) => {
+    if (typeof v === 'number') return v;
+    let s = norm(v).replace(/[€\s]/g, '');
+    if (!s) return null;
+    if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(s)) s = s.replace(/\./g, '').replace(',', '.');
+    else if (/^-?\d+,\d+$/.test(s)) s = s.replace(',', '.');
+    else if (/^-?\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, '');
+    const n = Number(s);
+    return Number.isFinite(n) ? n : NaN;
+  };
+  const parseDate = (v) => {
+    if (v instanceof Date && !isNaN(v)) return v.toISOString().slice(0, 10);
+    const s = norm(v); if (!s) return null;
+    let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/); if (m) return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+    m = s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{4})$/); if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+    return NaN;
+  };
+
+  function validate(spec, aoa) {
+    const issues = [];
+    const add = (lvl, i, kol, msg) => issues.push({lvl, rij: i == null ? null : i + 2, kol, msg});
+    const header = (aoa[0] || []).map(norm);
+    const colIdx = {};
+    header.forEach((h, i) => { const c = spec.kolommen.find((k) => keyOf(k.k) === keyOf(h)); if (c) colIdx[c.k] = i; else if (h) add('let', null, h, `Onbekende kolom “${h}” wordt genegeerd.`); });
+    spec.kolommen.filter((c) => c.req && colIdx[c.k] == null).forEach((c) => add('fout', null, c.k, `Verplichte kolom “${c.k}” ontbreekt. Gebruik het sjabloon of hernoem de kolom.`));
+    const body = aoa.slice(1).filter((r) => r && r.some((c) => norm(c) !== ''));
+    if (!body.length) add('fout', null, null, 'Het bestand bevat geen gegevensrijen onder de kopregel.');
+    if (body.length > 5000) add('fout', null, null, `Te veel rijen (${body.length}); maximaal 5000 per bestand.`);
+    const rows = body.slice(0, 5000).map((r, i) => {
+      const o = {};
+      spec.kolommen.forEach((c) => {
+        if (colIdx[c.k] == null) { o[c.k] = null; return; }
+        const raw = r[colIdx[c.k]];
+        const s = norm(raw);
+        if (s === '') { o[c.k] = null; if (c.req) add('fout', i, c.k, 'Verplicht veld is leeg.'); return; }
+        if (c.type === 'tekst') { o[c.k] = s; if (s.length > 500) add('let', i, c.k, 'Tekst is langer dan 500 tekens.'); return; }
+        if (c.type === 'keuze') {
+          let v = c.waarden.find((w) => keyOf(w) === keyOf(s));
+          if (!v && c.k === 'type' && keyOf(s) === 'onbekend') v = TYPES[5];
+          if (!v) { add('fout', i, c.k, `“${s}” is geen toegestane waarde.`); o[c.k] = s; } else o[c.k] = v;
+          return;
+        }
+        if (c.type === 'datum') { const d = parseDate(raw); if (Number.isNaN(d)) { add('fout', i, c.k, `“${s}” is geen datum; gebruik jjjj-mm-dd.`); o[c.k] = s; } else o[c.k] = d; return; }
+        const n = parseNumber(raw);
+        if (Number.isNaN(n)) { add('fout', i, c.k, `“${s}” is geen getal.`); o[c.k] = s; return; }
+        if ((c.type === 'geheel' || c.type === 'jaar') && !Number.isInteger(n)) add('fout', i, c.k, 'Moet een heel getal zijn.');
+        if (c.type === 'jaar' && (n < 2015 || n > 2040)) add('fout', i, c.k, 'Jaartal buiten 2015–2040.');
+        if (c.type === 'euro' && !Number.isInteger(n)) add('let', i, c.k, 'Bedrag heeft decimalen; wordt afgerond op hele euro’s.');
+        if (c.min != null && n < c.min) add('fout', i, c.k, `Minimaal ${c.min}.`);
+        if (c.max != null && n > c.max) add('fout', i, c.k, `Maximaal ${c.max}.`);
+        if (c.k === 'bedrag' && n > 0 && n < 1000) add('let', i, c.k, 'Klein bedrag: controleer of het niet in duizenden is opgegeven.');
+        o[c.k] = c.type === 'euro' ? Math.round(n) : n;
+      });
+      return o;
+    });
+    if (!issues.some((x) => x.lvl === 'fout' && x.rij == null) && spec.extra) spec.extra(rows, add);
+    return {rows, issues, header};
+  }
+
+
+  // ---------- statisch: geen opslag, upload via GitHub ----------
+  const REPO = (window.PLUSMAAT_REPO || '').trim();
+  const BRANCH = window.PLUSMAAT_BRANCH || 'main';
+  const uploadUrl = REPO && !REPO.includes('GEBRUIKER') ? `https://github.com/${REPO}/upload/${BRANCH}/aanleveringen` : null;
+
+  let actief = SPEC[0].id;
+  let check = null;
+  const tabsEl = document.getElementById('tabs');
+  const panel = document.getElementById('panel');
+
+  SPEC.forEach((s) => {
+    const b = el('button', {class: 'tab' + (s.id === 'verwijderingen' ? ' del' : ''), role: 'tab', type: 'button', id: 'tab-' + s.id, 'aria-selected': String(s.id === actief), 'aria-controls': 'panel'}, s.naam, el('span', {class: 'cnt', text: s.kolommen.length + ' kolommen'}));
+    b.addEventListener('click', () => { actief = s.id; check = null; [...tabsEl.children].forEach((t) => t.setAttribute('aria-selected', String(t.id === 'tab-' + s.id))); render(); });
+    tabsEl.append(b);
+  });
+
+  function formatTable(spec) {
+    return el('div', {class: 'tablebox'}, el('table', {},
+      el('thead', {}, el('tr', {}, el('th', {text: 'Kolom'}), el('th', {text: 'Verplicht'}), el('th', {text: 'Type'}), el('th', {text: 'Toegestaan'}), el('th', {text: 'Uitleg'}), el('th', {text: 'Voorbeeld'}))),
+      el('tbody', {}, spec.kolommen.map((c) => el('tr', {},
+        el('td', {class: 'col', text: c.k}),
+        el('td', {}, c.req ? el('span', {class: 'req', text: 'verplicht'}) : el('span', {class: 'opt', text: 'optioneel'})),
+        el('td', {text: TYPEUITLEG[c.type]}),
+        el('td', {}, c.waarden ? el('div', {class: 'vals'}, c.waarden.map((w) => el('code', {text: w}))) : (c.min != null || c.max != null ? [c.min != null ? '≥ ' + c.min : '', c.max != null ? '≤ ' + c.max : ''].filter(Boolean).join(', ') : '—')),
+        el('td', {class: 'small', text: c.uitleg}),
+        el('td', {class: 'small nums', text: c.vb || '—'})
+      )))));
+  }
+
+  function bestandsnaam(spec, rows) {
+    const slug = (x) => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    const g = rows && rows.length ? [...new Set(rows.map((r) => r.gemeente).filter(Boolean))] : [];
+    const j = rows && rows.length ? [...new Set(rows.map((r) => r.jaar).filter(Boolean))] : [];
+    return [spec.bestand, g.length === 1 ? slug(g[0]) : '', j.length === 1 ? j[0] : ''].filter(Boolean).join('-') + '.xlsx';
+  }
+
+  function render() {
+    const spec = SPEC.find((s) => s.id === actief);
+    panel.replaceChildren();
+    const dl = el('button', {class: 'btn', type: 'button', id: 'dl-' + spec.id}, 'Download Excel-sjabloon');
+    dl.addEventListener('click', () => downloadTemplate(spec));
+    if (!window.XLSX) dl.disabled = true;
+    panel.append(el('div', {class: 'panel-head'},
+      el('div', {}, el('p', {class: 'eyebrow', text: 'Format'}), el('h2', {text: spec.naam}), el('p', {text: spec.wat})),
+      el('div', {class: 'btns'}, dl)));
+    panel.append(el('div', {class: 'facts'},
+      el('div', {class: 'fact'}, el('span', {class: 'k', text: 'Wat er gebeurt'}), el('span', {class: 'small', text: spec.werking})),
+      el('div', {class: 'fact'}, el('span', {class: 'k', text: 'Waar het terechtkomt'}), el('span', {class: 'small', text: spec.raakt})),
+      el('div', {class: 'fact'}, el('span', {class: 'k', text: 'Bestandsnaam'}), el('span', {class: 'small'}, 'Begin de naam met ', el('span', {class: 'code', text: spec.bestand}), ', bijvoorbeeld ', el('span', {class: 'fname', text: spec.bestand + '-delft-2027.xlsx'}), '. Gegevens op het tabblad ', el('span', {class: 'code', text: 'Gegevens'}), '.'))));
+    panel.append(formatTable(spec));
+    panel.append(el('details', {}, el('summary', {text: 'Algemene regels voor alle bestanden'}), el('ul', {class: 'small'},
+      el('li', {text: 'Eén kopregel met de kolomnamen precies zoals hierboven; hoofdletters en spaties maken niet uit.'}),
+      el('li', {text: 'Geen samengevoegde cellen, subtotalen of lege rijen tussen de gegevens.'}),
+      el('li', {text: 'Bedragen in hele euro’s, zonder “x 1.000”. Punten als duizendtal en het €-teken worden herkend.'}),
+      el('li', {text: 'Kolommen die niet in het format staan, worden genegeerd. Maximaal 5000 rijen per bestand.'}),
+      el('li', {text: 'Excel (.xlsx) of CSV. Het bestand wordt bij de upload op GitHub nogmaals met dezelfde regels gecontroleerd.'}))));
+    const input = el('input', {type: 'file', id: 'file-' + spec.id, accept: '.xlsx,.xls,.csv'});
+    const drop = el('label', {class: 'drop', for: 'file-' + spec.id},
+      el('strong', {text: 'Sleep je bestand hierheen of kies een bestand'}),
+      el('span', {class: 'small muted', text: window.XLSX ? 'Het bestand wordt alleen in je browser gecontroleerd; er wordt niets verstuurd.' : 'De Excel-lezer kon niet laden. Probeer de pagina opnieuw te openen.'}),
+      input);
+    input.addEventListener('change', () => input.files[0] && readFile(spec, input.files[0]));
+    drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); });
+    drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+    drop.addEventListener('drop', (e) => { e.preventDefault(); drop.classList.remove('over'); const f = e.dataTransfer.files[0]; if (f) readFile(spec, f); });
+    if (!window.XLSX) input.disabled = true;
+    panel.append(el('div', {}, el('h3', {text: 'Bestand controleren', style: 'margin-bottom:8px'}), drop));
+    if (check && check.spec.id === spec.id) panel.append(resultView(check));
+  }
+
+  function resultView(c) {
+    const fouten = c.issues.filter((x) => x.lvl === 'fout');
+    const lets = c.issues.filter((x) => x.lvl === 'let');
+    const box = el('div', {class: 'result'});
+    box.append(el('h3', {text: 'Controle van ' + c.file.name}));
+    box.append(el('div', {class: 'summary'},
+      el('span', {class: 'pill', text: fmtInt.format(c.rows.length) + ' rijen'}),
+      el('span', {class: 'pill ' + (fouten.length ? 'bad' : 'ok'), text: fouten.length ? fouten.length + ' fouten' : 'Geen fouten'}),
+      el('span', {class: 'pill ' + (lets.length ? 'warn' : 'ok'), text: lets.length ? lets.length + ' waarschuwingen' : 'Geen waarschuwingen'})));
+    if (c.issues.length) {
+      const shown = c.issues.slice(0, 200);
+      box.append(el('div', {class: 'tablebox'}, el('table', {class: 'issues'},
+        el('thead', {}, el('tr', {}, el('th', {text: 'Soort'}), el('th', {text: 'Rij'}), el('th', {text: 'Kolom'}), el('th', {text: 'Melding'}))),
+        el('tbody', {}, shown.map((x) => el('tr', {},
+          el('td', {class: x.lvl === 'fout' ? 'lvl-fout' : 'lvl-let', text: x.lvl === 'fout' ? 'Fout' : 'Waarschuwing'}),
+          el('td', {class: 'nums', text: x.rij == null ? '—' : String(x.rij)}),
+          el('td', {class: 'col', text: x.kol || '—'}),
+          el('td', {text: x.msg})))))));
+      if (c.issues.length > shown.length) box.append(el('p', {class: 'small muted', text: `En nog ${c.issues.length - shown.length} meldingen.`}));
+    }
+    const cols = c.spec.kolommen.map((k) => k.k);
+    const toon = (k, v) => { if (v == null) return ''; if (typeof v !== 'number') return String(v); if (k === 'jaar' || k === 'rang') return String(v); return Number.isInteger(v) ? fmtInt.format(v) : fmtDec.format(v); };
+    const kop = el('tr', {}, el('th', {text: 'Rij'}), cols.map((k) => el('th', {text: k})));
+    const rijen = c.rows.slice(0, 8).map((r, i) => el('tr', {}, el('td', {class: 'nums', text: String(i + 2)}), cols.map((k) => el('td', {class: 'small nums', text: toon(k, r[k])}))));
+    box.append(el('details', {}, el('summary', {text: 'Voorbeeld van de eerste 8 rijen zoals ze worden verwerkt'}), el('div', {class: 'tablebox', style: 'margin-top:8px'}, el('table', {}, el('thead', {}, kop), el('tbody', {}, rijen)))));
+    const naam = bestandsnaam(c.spec, c.rows);
+    const goed = c.file.name.toLowerCase().startsWith(c.spec.bestand);
+    if (fouten.length) {
+      box.append(el('p', {class: 'note', text: 'Los eerst de fouten op en controleer het bestand opnieuw. Een bestand met fouten wordt op GitHub afgewezen.'}));
+    } else {
+      const stappen = el('ol', {class: 'small'},
+        el('li', {}, goed ? 'De bestandsnaam is goed.' : el('span', {}, 'Geef het bestand een naam die begint met ', el('span', {class: 'code', text: c.spec.bestand}), ', bijvoorbeeld ', el('span', {class: 'fname', text: naam}), '.')),
+        el('li', {text: 'Open de uploadpagina op GitHub en sleep het bestand erin.'}),
+        el('li', {text: 'Kies “Commit directly to the main branch” en klik op “Commit changes”.'}),
+        el('li', {text: 'Na een paar minuten staat de verwerking in het overzicht hieronder en is de site bijgewerkt.'}));
+      const btns = el('div', {class: 'btns'});
+      if (uploadUrl) btns.append(el('a', {class: 'btn primary', href: uploadUrl, target: '_blank', rel: 'noopener'}, 'Open uploadpagina op GitHub'));
+      else btns.append(el('span', {class: 'small muted', text: 'Stel in assets/config.js de naam van de GitHub-repository in om hier een uploadknop te krijgen.'}));
+      box.append(el('div', {class: 'note'}, el('p', {}, el('strong', {text: lets.length ? 'Klaar om te uploaden. Controleer de waarschuwingen nog even.' : 'Alles klopt met het format.'})), stappen, btns));
+    }
+    return box;
+  }
+
+  async function readFile(spec, file) {
+    try {
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type: 'array', cellDates: true});
+      const name = wb.SheetNames.find((n) => n.trim().toLowerCase() === 'gegevens') || wb.SheetNames[0];
+      const aoa = XLSX.utils.sheet_to_json(wb.Sheets[name], {header: 1, raw: true, defval: ''});
+      check = {spec, file, ...validate(spec, aoa)};
+    } catch (e) {
+      check = {spec, file, rows: [], issues: [{lvl: 'fout', rij: null, kol: null, msg: 'Het bestand kon niet worden gelezen. Sla het op als .xlsx of .csv en probeer het opnieuw.'}]};
+    }
+    render();
+  }
+
+  function downloadTemplate(spec) {
+    const wb = XLSX.utils.book_new();
+    const gegevens = XLSX.utils.aoa_to_sheet([spec.kolommen.map((c) => c.k)]);
+    gegevens['!cols'] = spec.kolommen.map((c) => ({wch: Math.max(14, c.k.length + 4)}));
+    XLSX.utils.book_append_sheet(wb, gegevens, 'Gegevens');
+    const uitleg = XLSX.utils.aoa_to_sheet([
+      ['Plusmaat Dataloket · ' + spec.naam], [spec.wat], [spec.werking], [],
+      ['Kolom', 'Verplicht', 'Type', 'Toegestane waarden', 'Uitleg', 'Voorbeeld'],
+      ...spec.kolommen.map((c) => [c.k, c.req ? 'ja' : 'nee', TYPEUITLEG[c.type], c.waarden ? c.waarden.join(' | ') : [c.min != null ? '≥ ' + c.min : '', c.max != null ? '≤ ' + c.max : ''].filter(Boolean).join(', '), c.uitleg, c.vb || '']),
+      [], ['Vul de gegevens in op het tabblad “Gegevens”. Het tabblad “Voorbeeld” wordt niet ingelezen.'],
+      ['Bewaar het bestand met een naam die begint met “' + spec.bestand + '”, bijvoorbeeld ' + spec.bestand + '-delft-2027.xlsx.']]);
+    uitleg['!cols'] = [{wch: 22}, {wch: 10}, {wch: 20}, {wch: 40}, {wch: 60}, {wch: 30}];
+    XLSX.utils.book_append_sheet(wb, uitleg, 'Uitleg');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([spec.kolommen.map((c) => c.k), ...spec.voorbeeld]), 'Voorbeeld');
+    XLSX.writeFile(wb, 'Plusmaat-sjabloon-' + spec.bestand + '.xlsx');
+  }
+
+  // ---------- logboek uit data/log.json ----------
+  fetch('data/log.json', {cache: 'no-cache'}).then((r) => r.ok ? r.json() : []).then((log) => {
+    const body = document.getElementById('logbody');
+    if (!Array.isArray(log) || !log.length) return;
+    body.replaceChildren();
+    log.slice().reverse().slice(0, 200).forEach((d) => {
+      const ok = d.status === 'verwerkt';
+      const dt = d.at ? new Date(d.at) : null;
+      body.append(el('tr', {},
+        el('td', {class: 'nums small', text: dt && !isNaN(dt) ? dt.toLocaleString('nl-NL', {day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'}) : '—'}),
+        el('td', {class: 'small fname', text: d.bestand || '—'}),
+        el('td', {text: d.soortNaam || d.soort || '—'}),
+        el('td', {class: 'small', text: (d.gemeenten || []).join(', ') || '—'}),
+        el('td', {class: 'nums', text: d.rijen != null ? fmtInt.format(d.rijen) : '—'}),
+        el('td', {}, el('span', {class: 'pill ' + (ok ? 'ok' : 'bad'), text: ok ? 'Verwerkt' : 'Afgewezen'})),
+        el('td', {class: 'small', text: (d.samenvatting || '') + (d.meldingen && d.meldingen.length ? ' · ' + d.meldingen.slice(0, 3).join(' · ') + (d.meldingen.length > 3 ? ' …' : '') : '')})));
+    });
+  }).catch(() => {});
+
+  render();
+})();
+</script>
+</body>
+</html>

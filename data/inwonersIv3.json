@@ -1,0 +1,62 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "inwoners": 673804
+ },
+ {
+  "gemeente": "Den Haag",
+  "inwoners": 569468
+ },
+ {
+  "gemeente": "Delft",
+  "inwoners": 110089
+ },
+ {
+  "gemeente": "Amsterdam",
+  "inwoners": 941927
+ },
+ {
+  "gemeente": "Utrecht",
+  "inwoners": 378121
+ },
+ {
+  "gemeente": "Arnhem",
+  "inwoners": 171822
+ },
+ {
+  "gemeente": "Tilburg",
+  "inwoners": 230746
+ },
+ {
+  "gemeente": "Schiedam",
+  "inwoners": 81931
+ },
+ {
+  "gemeente": "Zaanstad",
+  "inwoners": 165201
+ },
+ {
+  "gemeente": "Leiden",
+  "inwoners": 130328
+ },
+ {
+  "gemeente": "Nijmegen",
+  "inwoners": 189871
+ },
+ {
+  "gemeente": "Groningen",
+  "inwoners": 244427
+ },
+ {
+  "gemeente": "Zwolle",
+  "inwoners": 134147
+ },
+ {
+  "gemeente": "Eindhoven",
+  "inwoners": 249783
+ },
+ {
+  "gemeente": "Haarlem",
+  "inwoners": 168898
+ }
+]

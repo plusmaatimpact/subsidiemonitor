@@ -1,0 +1,527 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 28176000
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Sport",
+  "overheadToegerekend": 12110000
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 27781000
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 45550000
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 8657000
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 22544000
+ },
+ {
+  "gemeente": "Rotterdam",
+  "cluster": "Economie",
+  "overheadToegerekend": 4642000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 15620000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Sport",
+  "overheadToegerekend": 7505000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 17928000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 15597000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 10330000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 10408000
+ },
+ {
+  "gemeente": "Den Haag",
+  "cluster": "Economie",
+  "overheadToegerekend": 5882000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 2514000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Sport",
+  "overheadToegerekend": 797000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 2051000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 3870000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 807000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 1123000
+ },
+ {
+  "gemeente": "Delft",
+  "cluster": "Economie",
+  "overheadToegerekend": 994000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 27202000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Sport",
+  "overheadToegerekend": 10752000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 28235000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 29274000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 13154000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 16536000
+ },
+ {
+  "gemeente": "Amsterdam",
+  "cluster": "Economie",
+  "overheadToegerekend": 29961000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 42050000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Sport",
+  "overheadToegerekend": 15804000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 33276000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 60615000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 8488000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 19876000
+ },
+ {
+  "gemeente": "Utrecht",
+  "cluster": "Economie",
+  "overheadToegerekend": 12299000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 4416000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Sport",
+  "overheadToegerekend": 2719000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 3450000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 5455000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 1229000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 2549000
+ },
+ {
+  "gemeente": "Arnhem",
+  "cluster": "Economie",
+  "overheadToegerekend": 962000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 5349000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Sport",
+  "overheadToegerekend": 3887000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 8394000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 7073000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 1820000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 3189000
+ },
+ {
+  "gemeente": "Tilburg",
+  "cluster": "Economie",
+  "overheadToegerekend": 6613000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 1147000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Sport",
+  "overheadToegerekend": 824000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 1185000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 249000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 427000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 1144000
+ },
+ {
+  "gemeente": "Schiedam",
+  "cluster": "Economie",
+  "overheadToegerekend": 246000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 2181000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Sport",
+  "overheadToegerekend": 1366000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 2780000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 2910000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 873000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 2833000
+ },
+ {
+  "gemeente": "Zaanstad",
+  "cluster": "Economie",
+  "overheadToegerekend": 613000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 5001000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Sport",
+  "overheadToegerekend": 3257000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 3023000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 9243000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 2071000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 3175000
+ },
+ {
+  "gemeente": "Leiden",
+  "cluster": "Economie",
+  "overheadToegerekend": 2195000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 10342000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Sport",
+  "overheadToegerekend": 5133000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 11648000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 22967000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 3919000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 3986000
+ },
+ {
+  "gemeente": "Nijmegen",
+  "cluster": "Economie",
+  "overheadToegerekend": 1529000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 7473000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Sport",
+  "overheadToegerekend": 4266000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 3032000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 12206000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 1869000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 2702000
+ },
+ {
+  "gemeente": "Groningen",
+  "cluster": "Economie",
+  "overheadToegerekend": 2266000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 2479000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Sport",
+  "overheadToegerekend": 960000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 3230000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 10819000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 723000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 1542000
+ },
+ {
+  "gemeente": "Zwolle",
+  "cluster": "Economie",
+  "overheadToegerekend": 678000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 6780000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Sport",
+  "overheadToegerekend": 4884000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 6769000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 7521000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 2293000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 4538000
+ },
+ {
+  "gemeente": "Eindhoven",
+  "cluster": "Economie",
+  "overheadToegerekend": 3144000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Cultuur (musea, podia, erfgoed, bibliotheek)",
+  "overheadToegerekend": 6106000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Sport",
+  "overheadToegerekend": 3135000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Welzijn en burgerparticipatie",
+  "overheadToegerekend": 4422000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Opvang en beschermd wonen",
+  "overheadToegerekend": 9839000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Volksgezondheid",
+  "overheadToegerekend": 1712000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Onderwijsbeleid",
+  "overheadToegerekend": 1998000
+ },
+ {
+  "gemeente": "Haarlem",
+  "cluster": "Economie",
+  "overheadToegerekend": 913000
+ }
+]

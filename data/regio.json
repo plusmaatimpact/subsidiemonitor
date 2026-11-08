@@ -1,0 +1,58 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "regio": "Regio Rotterdam (GR beschermd wonen)",
+  "inwonersRegio": 963343,
+  "gemeenten": "Rotterdam, Albrandswaard, Barendrecht, Capelle aan den IJssel, Krimpen aan den IJssel, Lansingerland, Ridderkerk",
+  "bron": "https://lokaleregelgeving.overheid.nl/CVDR696721/1"
+ },
+ {
+  "gemeente": "Den Haag",
+  "regio": "Regio Haaglanden",
+  "inwonersRegio": 869052,
+  "gemeenten": "Den Haag, Leidschendam-Voorburg, Rijswijk, Wassenaar, Zoetermeer",
+  "bron": "https://leidschendam-voorburg.debatrijk.nl/documents/11/569/documents/5289/1653%20Bijlage%202%20Feiten%20en%20cijfers%20beschermd%20wonen%20en%20maatschappelijke%20opvang.pdf"
+ },
+ {
+  "gemeente": "Delft",
+  "regio": "Regio Delft-Westland-Oostland",
+  "inwonersRegio": 307059,
+  "gemeenten": "Delft, Westland, Pijnacker-Nootdorp, Midden-Delfland",
+  "bron": "Begroting Delft, subsidie KesslerPerspektief"
+ },
+ {
+  "gemeente": "Amsterdam",
+  "regio": "Regio Amsterdam-Amstelland",
+  "inwonersRegio": 1151282,
+  "gemeenten": "Amsterdam, Aalsmeer, Amstelveen, Diemen, Ouder-Amstel, Uithoorn",
+  "bron": "https://lokaleregelgeving.overheid.nl/CVDR463172"
+ },
+ {
+  "gemeente": "Arnhem",
+  "regio": "Regio Centraal Gelderland",
+  "inwonersRegio": 442780,
+  "gemeenten": "Arnhem, Doesburg, Duiven, Lingewaard, Overbetuwe, Renkum, Rheden, Rozendaal, Westervoort, Zevenaar",
+  "bron": "https://renkum.gemeenteoplossingen.nl/documenten/raadsbrieven/Raadsbrief-transformatieplan-beschermd-thuis-Transformatieplan-Beschermd-Thuis-Centraal-Gelderland.pdf"
+ },
+ {
+  "gemeente": "Leiden",
+  "regio": "Regio Holland Rijnland",
+  "inwonersRegio": 596466,
+  "gemeenten": "Leiden, Alphen aan den Rijn, Hillegom, Kaag en Braassem, Katwijk, Leiderdorp, Lisse, Nieuwkoop, Noordwijk, Oegstgeest, Teylingen, Voorschoten, Zoeterwoude",
+  "bron": "https://lokaleregelgeving.overheid.nl/CVDR719737"
+ },
+ {
+  "gemeente": "Nijmegen",
+  "regio": "Regio Gelderland-Zuid",
+  "inwonersRegio": 589699,
+  "gemeenten": "Nijmegen, Berg en Dal, Beuningen, Buren, Culemborg, Druten, Heumen, Maasdriel, Neder-Betuwe, Tiel, West Betuwe, West Maas en Waal, Wijchen, Zaltbommel",
+  "bron": "https://zoek.officielebekendmakingen.nl/gmb-2025-547215.pdf"
+ },
+ {
+  "gemeente": "Groningen",
+  "regio": "Provincie Groningen",
+  "inwonersRegio": 601286,
+  "gemeenten": "Groningen, Eemsdelta, Het Hogeland, Midden-Groningen, Oldambt, Pekela, Stadskanaal, Veendam, Westerkwartier, Westerwolde",
+  "bron": "Centrumregeling Beschermd Wonen en Opvang Groningen"
+ }
+]

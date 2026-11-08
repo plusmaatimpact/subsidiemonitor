@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Plusmaat Subsidiemonitor</title>
+<meta name="description" content="Subsidies aan sociale instellingen per gemeente, vergeleken met vergelijkbare gemeenten.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/plusmaat.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+window.DASH_SOURCES = {"posten": "data/posten.json", "gemeenten": "data/gemeenten.json", "studies": "data/studies.json", "context": "data/context.json", "duiding": "data/duiding.json", "iv3": "data/iv3.json", "inwonersIv3": "data/inwonersIv3.json", "peers": "data/peers.json", "overhead": "data/overhead.json", "overheadTotaal": "data/overheadTotaal.json", "regio": "data/regio.json"};
+window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
+</script>
+<script src="assets/dash.js"></script>
+</head>
+<body>
+<header class="site-top"><div class="site-top-in">
+  <a class="logo" href="index.html"><span class="logo-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span><span>Plusmaat<br>Impact</span></a>
+  <nav class="site-nav" aria-label="Hoofdmenu"><a href="index.html" aria-current="page">Monitor</a><a href="dataloket.html">Dataloket</a></nav>
+</div></header>
+<main id="dash-root">
+<style>
+.pm{--pm-teal:#14B8A6;--pm-tealdk:#0F766E;--pm-amber:#F59E0B;--pm-blue:#5577A3;--pm-geen:var(--cds-chart-muted);font-family:var(--font-anthropic-sans);display:flex;flex-direction:column;gap:var(--cds-gap-lg)}
+.pm h1{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:0;line-height:1.2}
+.pm-eyebrow{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:0 0 var(--cds-gap-xs);letter-spacing:.02em}
+.pm-take{margin:var(--cds-gap-xs) 0 0;color:var(--color-fg-muted);max-width:68ch}
+.pm .pm-take b{color:var(--color-fg);font-weight:600;font-variant-numeric:tabular-nums}
+.pm-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,11rem),1fr));gap:var(--cds-gap-md)}
+.pm-card{background:var(--color-panel);border:1px solid var(--color-border-line);border-radius:var(--cds-radius);padding:var(--cds-pad-lg);min-width:0}
+.pm-tile{display:flex;flex-direction:column;gap:var(--cds-gap-xs)}
+.pm-tile .pm-lbl{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-tile .pm-val{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);font-variant-numeric:tabular-nums;line-height:1.15}
+.pm-tile .pm-sub{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-tile.pm-accent{border-top:3px solid var(--pm-teal)}
+.pm h2{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium);margin:0}
+.pm-note{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:var(--cds-gap-xs) 0 var(--cds-gap-md)}
+.pm-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:var(--cds-gap-md)}
+.pm-legend{display:flex;flex-wrap:wrap;gap:var(--cds-gap-xs) var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-bottom:var(--cds-gap-sm)}
+.pm-legend span{display:inline-flex;align-items:center;gap:6px}
+.pm-sw{width:10px;height:10px;border-radius:2px;display:inline-block}
+.pm-sw.s-af{background:var(--pm-teal)}.pm-sw.s-iu{background:var(--pm-blue)}.pm-sw.s-aa{background:var(--pm-amber)}.pm-sw.s-ge{background:var(--pm-geen)}.pm-sw.s-in{background:var(--pm-teal)}.pm-sw.s-re{background:var(--pm-geen)}
+.pm-chart{position:relative;min-height:12rem}
+.pm-chart svg{display:block;overflow:visible}
+.pm-chart .pm-tick{font-size:var(--cds-font-size-caption);fill:var(--color-fg-muted)}
+.pm-chart .pm-end{font-size:var(--cds-font-size-caption);fill:var(--color-fg);font-variant-numeric:tabular-nums}
+.pm-chart .tick text{font-size:var(--cds-font-size-caption);fill:var(--color-fg-muted)}
+.pm-chart .tick line{stroke:var(--cds-chart-grid)}
+.pm-chart .domain{display:none}
+.pm-tip{position:absolute;pointer-events:none;background:var(--cds-surface-popover);border:1px solid var(--cds-border);border-radius:var(--cds-radius);box-shadow:var(--cds-shadow-popover);padding:var(--cds-pad-xs) var(--cds-pad-sm);font-size:var(--cds-font-size-caption);white-space:nowrap;z-index:2}
+.pm-tip .pm-tip-h{color:var(--cds-text-secondary);margin-bottom:2px}
+.pm-tip div{display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.pm-fail{display:flex;align-items:center;justify-content:center;gap:8px;min-height:inherit;height:100%;color:var(--color-fg-muted);font-size:var(--cds-font-size-caption)}
+.pm-fail::before{content:"";width:.375rem;height:.375rem;border-radius:50%;background:var(--color-bad)}
+.pm-filters{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm);align-items:center;margin-bottom:var(--cds-gap-md)}
+.pm-filters .dash-select{min-width:9rem}
+.pm-search{font:inherit;font-size:var(--cds-font-size-body);padding:6px 10px;border:1px solid var(--color-border-line);border-radius:var(--cds-radius);background-color:var(--color-bg);color:var(--color-fg);min-width:min(100%,14rem);flex:1 1 12rem;max-width:20rem}
+.pm-search:focus-visible,.pm-btn:focus-visible,.pm-sort:focus-visible,.pm-link:focus-visible{outline:3px solid var(--pm-tealdk);outline-offset:2px}
+.pm-btn{font:inherit;font-size:var(--cds-font-size-caption);padding:5px 10px;border-radius:var(--cds-radius);border:1px solid var(--pm-teal);background:transparent;color:var(--color-fg);cursor:pointer;white-space:nowrap}
+.pm-btn:hover{background:color-mix(in srgb,var(--pm-teal) 16%,transparent)}
+.pm-btn[disabled]{opacity:.45;cursor:default;border-color:var(--color-border-line);background:transparent}
+.pm-btn.pm-primary{background:var(--pm-teal);color:#0B2545;border-color:var(--pm-teal);font-weight:600}
+.pm-count{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin-left:auto}
+.pm-tablewrap{max-height:34rem;overflow:auto;border-top:1px solid var(--color-border-line)}
+.pm table{width:100%;border-collapse:collapse;font-size:var(--cds-font-size-body);font-variant-numeric:tabular-nums}
+.pm th{position:sticky;top:0;background:var(--color-panel);text-align:left;font-weight:var(--cds-font-weight-medium);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);padding:8px 10px;border-bottom:1px solid var(--color-border-line);z-index:1;white-space:nowrap}
+.pm td{padding:8px 10px;border-bottom:1px solid var(--color-border-line);vertical-align:middle}
+.pm td.num,.pm th.num{text-align:right}
+.pm-sort{all:unset;cursor:pointer}
+.pm-sort::after{content:"";display:inline-block;width:1em}
+.pm th[aria-sort=ascending] .pm-sort::after{content:" ↑"}
+.pm th[aria-sort=descending] .pm-sort::after{content:" ↓"}
+.pm-badge{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.pm-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--pm-geen)}
+.pm-badge.s-af::before{background:var(--pm-teal)}.pm-badge.s-iu::before{background:var(--pm-blue)}.pm-badge.s-aa::before{background:var(--pm-amber)}
+.pm-old{color:var(--color-warn)}
+.pm-sub2{display:block;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+@media (max-width:720px){.pm .pm-hide-sm{display:none}}
+.pm-aanvraag{border-left:4px solid var(--pm-teal)}
+.pm-aanvraag-head{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--cds-gap-md);flex-wrap:wrap}
+.pm-aanvraag h3{font-family:var(--font-anthropic-serif);font-weight:400;font-size:var(--cds-font-size-title);margin:2px 0 0}
+.pm-facts{display:flex;flex-wrap:wrap;gap:var(--cds-gap-xs) var(--cds-gap-md);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:var(--cds-gap-sm) 0 var(--cds-gap-md)}
+.pm-facts b{color:var(--color-fg);font-weight:600}
+.pm-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,14rem),1fr));gap:var(--cds-gap-md);align-items:start}
+.pm-form label{display:flex;flex-direction:column;gap:6px;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-spec{display:grid;grid-template-columns:repeat(3,auto);gap:var(--cds-gap-md);justify-content:start}
+.pm-spec .pm-lbl{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-spec .pm-v{font-family:var(--font-anthropic-serif);font-size:var(--cds-font-size-heading);font-variant-numeric:tabular-nums}
+.pm-wat{margin:var(--cds-gap-sm) 0 0;font-size:var(--cds-font-size-body)}
+.pm-adv{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);margin:6px 0 0}
+.pm-actions{display:flex;flex-wrap:wrap;gap:var(--cds-gap-sm);align-items:center;margin-top:var(--cds-gap-md)}
+.pm-link{display:inline-block;text-decoration:none;padding:7px 14px;border-radius:var(--cds-radius);background:var(--pm-teal);color:#0B2545;font-weight:600;font-size:var(--cds-font-size-body)}
+.pm-small{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm details{font-size:var(--cds-font-size-body);color:var(--color-fg-muted)}
+.pm details summary{cursor:pointer;color:var(--color-fg)}
+.pm dl{display:grid;grid-template-columns:minmax(8rem,max-content) 1fr;gap:6px var(--cds-gap-md);margin:var(--cds-gap-sm) 0}
+.pm dt{color:var(--color-fg);font-weight:600}.pm dd{margin:0}
+[data-dash-source-state=refreshing]{opacity:.5;transition:opacity var(--cds-dur-slow)}
+[data-dash-source-state=empty]{color:transparent}
+.pm-posten{margin:var(--cds-gap-sm) 0 0;padding:0;list-style:none;font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);display:flex;flex-direction:column;gap:2px}
+.pm-posten li{display:flex;justify-content:space-between;gap:var(--cds-gap-md);max-width:32rem;font-variant-numeric:tabular-nums}
+.pm-posten b{color:var(--color-fg);font-weight:600}
+.pm-chart.pm-tall{min-height:20rem}
+.pm-gemeenten{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:var(--cds-gap-md)}
+.pm .pm-gcard{display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--color-fg);border-top:3px solid var(--pm-teal);transition:border-color var(--cds-dur-slow)}
+.pm .pm-gcard:hover{border-color:var(--pm-teal);box-shadow:var(--cds-shadow-popover)}
+.pm .pm-gcard:focus-visible{outline:3px solid var(--pm-tealdk);outline-offset:2px}
+.pm-gname{font-size:var(--cds-font-size-heading);font-weight:var(--cds-font-weight-medium)}
+.pm-gval{font-family:var(--font-anthropic-serif);font-size:var(--cds-font-size-title);font-variant-numeric:tabular-nums;line-height:1.15}
+.pm-gfacts{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);font-variant-numeric:tabular-nums}
+.pm-gscope{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);font-style:italic}
+.pm-gopen{margin-top:auto;padding-top:var(--cds-gap-sm);font-size:var(--cds-font-size-caption);font-weight:600;color:var(--color-fg)}
+.pm-warn{margin:0;padding:var(--cds-pad-sm) var(--cds-pad-md);border-left:3px solid var(--pm-amber);background:var(--color-panel);font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);border-radius:var(--cds-radius)}
+.pm-chart.pm-short{min-height:8rem}
+.pm-tabs{display:flex;gap:var(--cds-gap-xs);margin-top:var(--cds-gap-md);border-bottom:1px solid var(--color-border-line);flex-wrap:wrap}
+.pm-tab{font:inherit;font-size:var(--cds-font-size-body);background:transparent;border:0;border-bottom:3px solid transparent;padding:8px 12px;margin-bottom:-1px;color:var(--color-fg-muted);cursor:pointer}
+.pm-tab[aria-selected=true]{color:var(--color-fg);border-bottom-color:var(--pm-teal);font-weight:600}
+.pm-tab:focus-visible{outline:3px solid var(--pm-tealdk);outline-offset:2px}
+.pm-page{display:flex;flex-direction:column;gap:var(--cds-gap-lg)}
+.pm-page[hidden]{display:none}
+.pm-lead{border-left:4px solid var(--pm-teal)}
+.pm-lead p{margin:var(--cds-gap-sm) 0 0;max-width:75ch}
+.pm .pm-inline{color:var(--color-fg);text-decoration:underline;text-decoration-color:var(--pm-teal);text-underline-offset:3px}
+.pm h3{font-size:var(--cds-font-size-body);font-weight:600;margin:var(--cds-gap-md) 0 var(--cds-gap-xs)}
+.pm-bullets{margin:var(--cds-gap-xs) 0 0;padding-left:1.2rem;display:flex;flex-direction:column;gap:6px;font-size:var(--cds-font-size-body)}
+.pm .pm-bullets b{font-weight:600}
+.pm-tablewrap.pm-auto{max-height:none}
+.pm tr.pm-total td{font-weight:600;border-top:2px solid var(--color-border-line)}
+.pm td.pm-label{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted);min-width:12rem}
+.pm-duiding{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr));gap:var(--cds-gap-md)}
+.pm-ditem{border-top:2px solid var(--pm-teal);padding-top:var(--cds-gap-sm)}
+.pm-dhead{display:flex;flex-direction:column;gap:2px}
+.pm-dlabel{font-size:var(--cds-font-size-caption);color:var(--color-fg-muted)}
+.pm-ditem p{margin:6px 0 0;font-size:var(--cds-font-size-body)}
+.pm-concl{margin-top:0}
+.pm-concl h3:first-child{margin-top:var(--cds-gap-sm)}
+.pm tr.pm-rol-eigen td{font-weight:600}
+.pm tr.pm-rol-gemiddelde td{color:var(--color-fg-muted);border-top:2px solid var(--color-border-line)}
+.pm tr.pm-rol-verschil td{font-weight:600}
+.pm td.pm-hi,.pm td.pm-lo{color:var(--color-warn)}
+.pm-focus{margin:var(--cds-gap-md) 0 0}
+.pm-focus .dash-select{min-width:12rem}
+.pm-focus label{margin-left:var(--cds-gap-sm)}
+.pm-focus label:first-child{margin-left:0}
+</style>
+<div class="pm" lang="nl">
+  <header class="pm-head" id="overzicht">
+    <p class="pm-eyebrow">Plusmaat Impact · Subsidiemonitor sociale initiatieven</p>
+    <h1>Gemeenten in beeld</h1>
+    <p class="pm-take">In <b data-draw="t-n" data-source="totaal" data-field="nGemeenten">—</b> gemeenten brengen we <b data-draw="t-bedrag" data-source="totaal" data-field="totaal">—</b> aan subsidies voor <b data-draw="t-inst" data-source="totaal" data-field="nInstellingen">—</b> instellingen in beeld. Voor <b data-draw="t-zonder" data-source="totaal" data-field="nZonder">—</b> daarvan is nog geen impactstudie bekend. Kies een gemeente voor het register en om studies aan te vragen.</p>
+    <div class="pm-tabs" role="tablist" aria-label="Onderdelen">
+      <button class="pm-tab" role="tab" type="button" data-tab="tab-gemeenten" aria-selected="true">Gemeenten</button>
+      <button class="pm-tab" role="tab" type="button" data-tab="duiding" aria-selected="false">Vergelijking en duiding</button>
+      <button class="pm-tab" role="tab" type="button" data-tab="peers" aria-selected="false">Vergelijkbare gemeenten</button>
+    </div>
+  </header>
+
+  <section class="pm-page" id="tab-gemeenten" role="tabpanel">
+
+  <section class="pm-gemeenten" id="gemeenten" aria-label="Kies een gemeente" data-draw="kaarten" data-source="perGemeente"></section>
+
+  <p class="pm-warn">Let op bij vergelijken: Rotterdam levert alle gesubsidieerde instellingen aan, Den Haag en Delft alleen subsidies die op naam in de begroting staan. Totalen en bedragen per inwoner zijn daardoor niet één-op-één vergelijkbaar; de verdeling over domeinen wel beter.</p>
+
+  <section class="pm-grid" id="vergelijking" aria-label="Vergelijking">
+    <div class="pm-card" id="per-inwoner">
+      <h2>Subsidie per inwoner</h2>
+      <p class="pm-note">Totaal van de aangeleverde posten gedeeld door het aantal inwoners op 1 januari 2026.</p>
+      <div class="pm-chart pm-short" data-draw="chart-inwoner" data-source="perGemeente"></div>
+    </div>
+    <div class="pm-card" id="domeinen">
+      <h2>Verdeling over domeinen</h2>
+      <p class="pm-note">Aandeel van elk Plusmaat-domein in de subsidie per gemeente.</p>
+      <div class="pm-legend" data-draw="legend-domein" data-source="domeinVerdeling">—</div>
+      <div class="pm-chart pm-short" data-draw="chart-domein" data-source="domeinVerdeling"></div>
+    </div>
+  </section>
+
+  <section class="pm-card" id="tabel">
+    <h2>Alle gemeenten naast elkaar</h2>
+    <p class="pm-note">Instellingen zonder regelingen en budgetposten; impactstatus uit de studielijst van Plusmaat Impact.</p>
+    <div class="pm-tablewrap">
+      <table class="pm-table" data-source="perGemeente" data-row-key="gemeente">
+        <thead><tr>
+          <th data-field="gemeente">Gemeente</th>
+          <th data-field="inwoners" class="num pm-hide-sm">Inwoners</th>
+          <th data-field="totaal" class="num">Subsidie</th>
+          <th data-field="perInwoner" class="num">Per inwoner</th>
+          <th data-field="nInstellingen" class="num pm-hide-sm">Instellingen</th>
+          <th data-field="nZonder" class="num pm-hide-sm">Zonder studie</th>
+          <th data-field="nMetStudie" class="num pm-hide-sm">Met studie</th>
+          <th data-field="gemRendement" class="num pm-hide-sm">Rendement/€</th>
+          <th data-field="jaar" class="num pm-hide-sm">Begroting</th>
+        </tr></thead>
+        <tbody data-draw="tabel"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <details class="pm-card" id="toelichting">
+    <summary>Bronnen en werkwijze</summary>
+    <dl>
+      <dt>Rotterdam</dt><dd>Begroting 2027, overzicht ‘Gesubsidieerde instelling per programma’.</dd>
+      <dt>Den Haag</dt><dd>Programmabegroting, overzicht voorgenomen begrotingssubsidies; begrotingsjaar aangenomen als 2027. De aangeleverde lijst is mogelijk niet volledig.</dd>
+      <dt>Delft</dt><dd>Begroting, subsidieontvangers per programma; begrotingsjaar aangenomen als 2027.</dd>
+      <dt>Inwoners</dt><dd>Aantal inwoners op 1 januari 2026 volgens de gemeentelijke bevolkingsregisters (via allecijfers.nl).</dd>
+      <dt>Domein</dt><dd>Elke begrotingscategorie is ingedeeld in een vaste Plusmaat-domeinindeling, zodat gemeenten vergelijkbaar zijn.</dd>
+      <dt>Nieuwe gemeente</dt><dd>Lever de subsidielijst aan (Excel, pdf of tekst); die wordt omgezet naar hetzelfde format en krijgt een eigen dashboard en een kaart op deze pagina.</dd>
+    </dl>
+  </details>
+  </section>
+
+  <section class="pm-page" id="duiding" role="tabpanel" hidden>
+    <div class="pm-card pm-lead">
+      <h2>Vergelijking en duiding</h2>
+      <p>Op papier verschillen de subsidies per inwoner sterk, maar de drie lijsten meten niet hetzelfde. Rotterdam levert alle gesubsidieerde instellingen en regelingen aan; Den Haag alleen begrotingssubsidies; Delft alleen subsidies op naam. Vergelijk daarom vooral de verdeling over domeinen, en gebruik de verschillen per inwoner als aanleiding voor vragen, niet als oordeel.</p>
+      <p class="pm-small">Analyse door Plusmaat Impact, 8 november 2026.</p>
+    </div>
+
+    <div class="pm-card" id="vergelijk-domein">
+      <h2>1. Subsidie per inwoner per domein</h2>
+      <p class="pm-note">Euro per inwoner (1 januari 2026); verschil van Den Haag en Delft ten opzichte van Rotterdam. Bij onderwijs en de kleine domeinen is geen verschil berekend, omdat de posten niet vergelijkbaar zijn.</p>
+      <div class="pm-tablewrap pm-auto">
+        <table class="pm-table" data-source="domeinVergelijking" data-row-key="domein">
+          <thead><tr>
+            <th data-field="domein">Domein</th>
+            <th data-field="rotterdam" class="num">Rotterdam</th>
+            <th data-field="denHaag" class="num">Den Haag</th>
+            <th data-field="delft" class="num">Delft</th>
+            <th data-field="vsDenHaag" class="num pm-hide-sm">DH t.o.v. R</th>
+            <th data-field="vsDelft" class="num pm-hide-sm">Delft t.o.v. R</th>
+            <th data-source="duiding" data-field="label">Risk/context</th>
+          </tr></thead>
+          <tbody data-draw="vergelijk-tabel" data-source="duiding"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pm-grid">
+      <div class="pm-card" id="context">
+        <h2>2. Context per gemeente</h2>
+        <p class="pm-note">Demografie verklaart hooguit een klein deel van de verschillen; centrumfuncties en de reikwijdte van de lijsten veel meer.</p>
+        <div class="pm-tablewrap pm-auto">
+          <table class="pm-table" data-source="contextTabel" data-row-key="gemeente">
+            <thead><tr>
+              <th data-field="gemeente">Gemeente</th>
+              <th data-field="aandeel65" class="num">65+</th>
+              <th data-field="sociaalMinimum" class="num">Rond sociaal minimum</th>
+              <th data-field="inkomenPerInwoner" class="num pm-hide-sm">Inkomen per inwoner</th>
+              <th data-field="aandeelLasten" class="num">Subsidie / totale lasten</th>
+            </tr></thead>
+            <tbody data-draw="context-tabel"></tbody>
+          </table>
+        </div>
+        <p class="pm-small">Het aandeel in de totale lasten voor Rotterdam is een indicatie: het lastentotaal komt uit de begroting 2026. Voor Delft is het lastentotaal 2027 nog niet gevonden. De lasten per taakveld ontbreken nog; daardoor is het aandeel per taakveld niet te berekenen.</p>
+        <ul class="pm-bullets">
+          <li><b>Centrumfunctie opvang en beschermd wonen.</b> Alle drie financieren opvang of beschermd wonen voor hun regio; Delft voor Delft, Westland, Pijnacker-Nootdorp en Midden-Delfland. Bedragen per inwoner van de centrumgemeente overschatten de eigen inspanning.</li>
+          <li><b>Centrumfunctie cultuur.</b> Musea, podia en bibliotheken bedienen ook bezoekers van buiten de stad.</li>
+          <li><b>Vergrijzing</b> verschilt nauwelijks en verklaart de verschillen niet. <b>Armoede</b> is het hoogst in Rotterdam, maar verklaart geen factor vier tot vijf.</li>
+        </ul>
+      </div>
+
+      <div class="pm-card" id="risicos">
+        <h2>3. Definitie- en structurele risico’s</h2>
+        <p class="pm-note">Waar de verschillen uit boekhoudkundige keuzes kunnen komen.</p>
+        <ul class="pm-bullets">
+          <li><b>Reikwijdte van de lijst (hoog).</b> Subsidies via de verordening, zoals cultuurplan en welzijnswerk, ontbreken bij Den Haag en Delft.</li>
+          <li><b>Subsidie of inkoop.</b> Welzijn, jeugd en Wmo lopen soms via aanbesteding en staan dan niet in de lijst.</li>
+          <li><b>Gemeenschappelijke regeling of eigen dienst.</b> Jeugdgezondheidszorg en bibliotheek zijn in de ene gemeente een subsidie, in de andere een GGD-taak of eigen dienst.</li>
+          <li><b>Vastgoed en huurkorting.</b> Een korting op de huur van gemeentelijk vastgoed is een indirecte subsidie die nergens zichtbaar is.</li>
+          <li><b>Doorsluis.</b> Het Ondernemersfonds Delft is een doorgesluisde OZB-opslag, geen beleidskeuze.</li>
+          <li><b>Apparaatskosten.</b> Voert de gemeente een taak zelf uit, dan zit de prijs in de overhead in plaats van in de subsidie.</li>
+          <li><b>Dubbeltellingen en maxima.</b> Instellingen staan soms in meerdere programma’s; begrotingsbedragen zijn maxima, geen realisatie.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="pm-card" id="per-domein-duiding">
+      <h2>4. Duiding per domein</h2>
+      <p class="pm-note">Inhoudelijke toelichting bij de tabel hierboven.</p>
+      <div class="pm-duiding" data-draw="duiding-lijst" data-source="duiding"></div>
+    </div>
+
+    <div class="pm-card" id="conclusie">
+      <h2>Conclusie</h2>
+      <p>De verschillen in subsidie per inwoner zeggen met deze data vooral iets over hoe de gemeenten hun begroting presenteren, en weinig over hoeveel zij investeren in maatschappelijke doelen. Een oordeel over doelmatigheid is nog niet verantwoord.</p>
+      <div class="pm-grid pm-concl">
+        <div>
+          <h3>Gemeenschappelijke patronen</h3>
+          <ul class="pm-bullets">
+            <li>Zorg &amp; welzijn en cultuur dragen in alle drie de subsidiebegroting.</li>
+            <li>Grote bedragen gaan naar weinig ontvangers met een regionale functie.</li>
+            <li>Dezelfde regionale aanbieders worden door meerdere gemeenten gefinancierd.</li>
+          </ul>
+          <h3>Opvallende afwijkingen</h3>
+          <ul class="pm-bullets">
+            <li>Rotterdam boekt onderwijs, jeugdgezondheidszorg en grote regelingen als subsidie.</li>
+            <li>Den Haag toont geen lokaal welzijns-, buurt- of jongerenwerk op naam.</li>
+            <li>Delft toont een doorsluispost als economische subsidie.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Rechtmatigheid</h3>
+          <ul class="pm-bullets">
+            <li>Een begrotingssubsidie is alleen rechtmatig met ontvanger en maximumbedrag in de vastgestelde begroting.</li>
+            <li>Bij subsidie aan één aanbieder (Awb 4:23 lid 3 sub c) hoort een onderbouwing via marktanalyse.</li>
+            <li>Subsidie voor een vaste prestatie tegen een vaste prijs kan een verkapte opdracht zijn; dat risico is het grootst bij opvang, GGZ en jeugd.</li>
+          </ul>
+          <h3>Doelmatigheid</h3>
+          <ul class="pm-bullets">
+            <li>Geen lijst koppelt bedrag aan resultaat. Juist bij de grootste posten laat een maatschappelijke kosten-batenanalyse zien wat een euro oplevert.</li>
+          </ul>
+        </div>
+      </div>
+      <h3>Vervolgvragen</h3>
+      <ol class="pm-bullets">
+        <li>Volledig subsidieregister van Den Haag en Delft, inclusief subsidies via de verordening.</li>
+        <li>Lasten per Iv3-taakveld per gemeente, voor het aandeel subsidie per taakveld.</li>
+        <li>Regionale posten delen door het inwonertal van de regio, of apart zetten.</li>
+        <li>Indirecte subsidies in kaart: huurkortingen, garanties en leningen.</li>
+        <li>Per post splitsen in subsidie, inkoop, gemeenschappelijke regeling en eigen uitvoering.</li>
+        <li>Vergelijken per aanbieder: prijs per plek of traject bij KesslerPerspektief, Brijder en GGZ Rivierduinen.</li>
+        <li>Wegen met de verdeelmaatstaven van het gemeentefonds en vergelijken met gemeenten van dezelfde grootteklasse.</li>
+        <li>Een quickscan of MKBA voor de grootste posten zonder impactonderbouwing.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="pm-page" id="peers" role="tabpanel" hidden>
+    <div class="pm-card pm-lead">
+      <h2>Vergelijkbare gemeenten</h2>
+      <p>Per gemeente zijn drie vergelijkingsgemeenten gekozen met AMIGO, de benchmarktool van VNG en Waar staat je gemeente, aangevuld met omvang en centrumfunctie. De vergelijking gebruikt de Iv3-begroting 2026 van het CBS: alle gemeenten boeken hun lasten daarin volgens dezelfde taakvelden, dus dit is eerlijker dan de subsidielijsten.</p>
+      <div class="pm-filters pm-focus">
+        <label class="pm-small" for="pm-focus">Gemeente</label>
+        <select class="dash-select pm-focussel" id="pm-focus" aria-label="Gemeente" data-draw="focus-opties" data-source="peers"></select>
+        <label class="pm-small" for="pm-methode">Methode</label>
+        <select class="dash-select pm-methodesel" id="pm-methode" aria-label="Methode">
+          <option value="gecorrigeerd">Gecorrigeerd (aanbevolen)</option>
+          <option value="geboekt">Zoals geboekt</option>
+        </select>
+      </div>
+      <p class="pm-small"><b>Gecorrigeerd</b> betekent: de overhead van elke gemeente is naar rato van de directe lasten over de taakvelden verdeeld, en opvang en beschermd wonen zijn gedeeld door het aantal inwoners van de hele centrumregio. Zo telt het niet mee of een gemeente een taak zelf uitvoert of uitbesteedt, of voor hoeveel buurgemeenten zij betaalt.</p>
+    </div>
+
+    <div class="pm-card" id="peer-keuze">
+      <h2>Gekozen vergelijkingsgemeenten</h2>
+      <p class="pm-note">AMIGO-gelijkenis van 0 tot 1 op het integrale profiel, het sociaal domein en sociaaleconomische status (SES).</p>
+      <div class="pm-duiding" data-draw="peer-kaarten" data-source="peers"></div>
+    </div>
+
+    <div class="pm-card" id="peer-verschil">
+      <h2>Verschil met vergelijkingsgemeenten per taakveld</h2>
+      <p class="pm-note">Lasten per inwoner van de gekozen gemeente ten opzichte van het gemiddelde van haar drie vergelijkingsgemeenten, begroting 2026.</p>
+      <div class="pm-chart pm-short" data-draw="peer-chart" data-source="peerVergelijking"></div>
+    </div>
+
+    <div class="pm-card" id="peer-tabel">
+      <h2>Lasten per inwoner per taakveld</h2>
+      <p class="pm-note">Euro per inwoner (1 januari 2026), volgens de gekozen methode. De laatste twee kolommen tonen hoeveel van de lasten als subsidie of inkomensoverdracht is geboekt.</p>
+      <div class="pm-tablewrap pm-auto">
+        <table class="pm-table" data-source="peerVergelijking" data-row-key="focus,gemeente,methode">
+          <thead><tr>
+            <th data-field="gemeente">Gemeente</th>
+            <th data-field="cultuur" class="num">Cultuur</th>
+            <th data-field="sport" class="num pm-hide-sm">Sport</th>
+            <th data-field="welzijn" class="num">Welzijn</th>
+            <th data-field="opvang" class="num">Opvang en beschermd wonen</th>
+            <th data-field="gezondheid" class="num pm-hide-sm">Volks­gezondheid</th>
+            <th data-field="onderwijs" class="num pm-hide-sm">Onderwijs­beleid</th>
+            <th data-field="economie" class="num pm-hide-sm">Economie</th>
+            <th data-field="totaal" class="num">Totaal</th>
+            <th data-field="overdrachtenPerInwoner" class="num pm-hide-sm">Overdrachten</th>
+            <th data-field="aandeelOverdrachten" class="num pm-hide-sm">Aandeel overdrachten</th>
+          </tr></thead>
+          <tbody data-draw="peer-rijen"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="pm-card" id="peer-correcties">
+      <h2>Correcties per gemeente</h2>
+      <p class="pm-note">Overhead als aandeel van de directe lasten, en de regio waarover opvang en beschermd wonen per inwoner zijn verdeeld.</p>
+      <div class="pm-tablewrap pm-auto">
+        <table class="pm-table" data-source="correcties" data-row-key="focus,gemeente">
+          <thead><tr>
+            <th data-field="gemeente">Gemeente</th>
+            <th data-field="aandeelOverhead" class="num">Overhead</th>
+            <th data-field="regio">Centrumregio</th>
+            <th data-field="inwonersRegio" class="num pm-hide-sm">Inwoners regio</th>
+            <th data-field="aandeelEigen" class="num pm-hide-sm">Aandeel eigen inwoners</th>
+            <th data-field="opmerking">Opmerking</th>
+          </tr></thead>
+          <tbody data-draw="correctie-rijen"></tbody>
+        </table>
+      </div>
+      <p class="pm-small">Regio’s volgens de regelingen en samenwerkingsafspraken van de centrumgemeenten; inwoners per 1 januari 2026 (CBS). Voor Rotterdam is de regio van de gemeenschappelijke regeling beschermd wonen gebruikt; de regio voor maatschappelijke opvang kan groter zijn. Voor Groningen is de hele provincie aangenomen.</p>
+    </div>
+
+    <div class="pm-card" id="peer-lessen">
+      <h2>Wat de vergelijking laat zien</h2>
+      <ul class="pm-bullets">
+        <li><b>Het verschil uit de subsidielijsten verdwijnt grotendeels.</b> Op taakveldniveau liggen Rotterdam en Den Haag bij cultuur, sport en welzijn dicht bij elkaar. Het grote verschil in de subsidielijsten komt dus vooral door hoe de lijsten zijn opgesteld.</li>
+        <li><b>Boekingswijze verschilt ook in Iv3.</b> Den Haag boekt vrijwel niets in cultuur als subsidie of overdracht, terwijl cultuurinstellingen wel op naam subsidie krijgen. Vergelijk daarom op totale lasten per taakveld en niet op de subsidiecategorie.</li>
+        <li><b>Opvang en beschermd wonen</b> zijn in de gecorrigeerde methode per inwoner van de centrumregio berekend. Een verschil dat dan overblijft, zegt meer over beleid, tarieven of de zwaarte van de doelgroep.</li>
+        <li><b>Overhead</b> wordt in de gecorrigeerde methode over alle taakvelden verdeeld. Dat verschuift de verschillen meestal maar een paar procentpunten; de boekingswijze van overhead is dus geen grote bron van ruis.</li>
+        <li><b>Vervolg:</b> gebruik de afwijkingen van meer dan een kwart als startpunt voor een gesprek met de gemeente, en voor de vraag waar een impactstudie het meeste oplevert.</li>
+      </ul>
+      <p class="pm-small">Bronnen: <a class="pm-inline" href="https://amigo.waarstaatjegemeente.nl/">AMIGO (VNG / Waar staat je gemeente)</a>, versie 3.94; <a class="pm-inline" href="https://iv3statline.cbs.nl/portal.html?_la=nl&amp;_catalog=IV3&amp;tableId=45078NED">CBS, Gemeenten 2026 onbewerkte Iv3-data</a> (begroting, 2e plaatsing); inwoners per 1 januari 2026 via AlleCijfers. Totale lasten zijn exclusief mutaties in reserves, financiële transacties en interne verrekeningen. Overdrachten = Iv3-categorieën subsidies (4.2) en inkomensoverdrachten aan overige instellingen (4.3.8).</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(() => {
+  const nl = d3.formatLocale({decimal: ',', thousands: '.', grouping: [3], currency: ['€ ', '']});
+  const fInt = nl.format(',d');
+  const fEur = nl.format('$,.0f');
+  const fPct = nl.format('.0%');
+  const fDec = nl.format(',.2f');
+  const f1 = nl.format(',.1f');
+  const fMln = (v) => v == null ? '—' : Math.abs(v) >= 1e6 ? '€ ' + f1(v / 1e6) + ' mln' : fEur(v);
+  const fPI = (v) => '€ ' + fInt(Math.round(v));
+
+  dash.calc('perGemeente', {
+    inputs: ['posten', 'gemeenten', 'studies'],
+    title: 'Kerncijfers per gemeente',
+    description: 'Per gemeente: subsidie, per inwoner, aantal instellingen (zonder regelingen) en hoeveel daarvan een Plusmaat-studie hebben.',
+    fn: (posten, gemeenten, studies) => gemeenten.map((g) => {
+      const p = posten.filter((r) => r.gemeente === g.gemeente);
+      const totaal = d3.sum(p, (r) => r.bedrag ?? 0);
+      const inst = [...new Set(p.filter((r) => r.type !== 'Regeling / budgetpost').map((r) => r.instelling))];
+      const st = studies.filter((s) => s.gemeente === g.gemeente && inst.includes(s.instelling));
+      const af = st.filter((s) => s.status === 'Afgerond' && s.rendement != null);
+      return {
+        gemeente: g.gemeente, inwoners: g.inwoners, jaar: g.jaar, reikwijdte: g.reikwijdte,
+        totaal, perInwoner: g.inwoners ? totaal / g.inwoners : null,
+        nInstellingen: inst.length, nMetStudie: st.length, nZonder: inst.length - st.length,
+        gemRendement: af.length ? d3.mean(af, (s) => s.rendement) : null,
+      };
+    }),
+  });
+
+  dash.calc('totaal', {
+    inputs: ['perGemeente'],
+    title: 'Totaal alle gemeenten',
+    description: 'Opgeteld over alle gemeenten in de monitor.',
+    fn: (perGemeente) => [{
+      nGemeenten: perGemeente.length,
+      totaal: d3.sum(perGemeente, (g) => g.totaal),
+      nInstellingen: d3.sum(perGemeente, (g) => g.nInstellingen),
+      nZonder: d3.sum(perGemeente, (g) => g.nZonder),
+    }],
+  });
+
+  dash.calc('domeinVerdeling', {
+    inputs: ['posten'],
+    title: 'Subsidie per domein per gemeente',
+    description: 'Som van de posten per gemeente en Plusmaat-domein, met aandeel in het gemeentetotaal.',
+    fn: (posten) => d3.groups(posten, (r) => r.gemeente).flatMap(([gemeente, g]) => {
+      const tot = d3.sum(g, (r) => r.bedrag ?? 0);
+      return d3.rollups(g, (v) => d3.sum(v, (r) => r.bedrag ?? 0), (r) => r.domein)
+        .map(([domein, bedrag]) => ({gemeente, domein, bedrag, aandeel: tot ? bedrag / tot : 0}));
+    }),
+  });
+
+  // ---- header
+  const one = (name, field, fmt) => dash.draw(name, (el) => {
+    const d = dash.data('totaal');
+    const v = d.status === 'ok' && d.data[0] ? d.data[0][field] : null;
+    el.textContent = v == null ? '—' : fmt(v);
+  });
+  one('t-n', 'nGemeenten', fInt);
+  one('t-bedrag', 'totaal', fMln);
+  one('t-inst', 'nInstellingen', fInt);
+  one('t-zonder', 'nZonder', fInt);
+
+  // ---- gemeentekaarten
+  const card = (name, field, fmt) => dash.draw(name, (el) => {
+    const d = dash.data('perGemeente');
+    const g = (el.dataset.where || '').replace(/^gemeente=/, '');
+    const r = d.status === 'ok' ? d.data.find((x) => x.gemeente === decodeURIComponent(g)) : null;
+    el.classList.toggle('dash-skeleton', d.status === 'loading');
+    el.textContent = r && r[field] != null ? fmt(r[field]) : '—';
+  });
+  card('c-totaal', 'totaal', fMln);
+  card('c-inst', 'nInstellingen', fInt);
+  card('c-pi', 'perInwoner', fPI);
+  card('c-zonder', 'nZonder', fInt);
+  card('c-studie', 'nMetStudie', fInt);
+  card('c-scope', 'reikwijdte', String);
+
+  // ---- charts
+  const fail = (el) => { const f = document.createElement('div'); f.className = 'pm-fail'; f.textContent = 'Laden mislukt'; el.replaceChildren(f); };
+  const tipIn = (el) => d3.select(el).append('div').attr('class', 'pm-tip').style('display', 'none');
+  const placeTip = (tip, el, ev) => {
+    const [px, py] = d3.pointer(ev, el);
+    const tw = tip.node().offsetWidth;
+    tip.style('left', Math.max(0, Math.min(el.clientWidth - tw, px + 12)) + 'px').style('top', (py + 14) + 'px');
+  };
+  const labelWidth = (svg, labels) => {
+    const t = svg.append('text').attr('class', 'pm-tick');
+    let w = 0; labels.forEach((l) => { t.text(l); w = Math.max(w, t.node().getComputedTextLength()); });
+    t.remove(); return Math.ceil(w);
+  };
+
+  dash.draw('chart-inwoner', (el) => {
+    el.replaceChildren();
+    const d = dash.data('perGemeente');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return;
+    const rows = d.data.filter((r) => r.perInwoner != null).sort((a, b) => b.perInwoner - a.perInwoner);
+    const W = Math.max(260, el.clientWidth || 520), barH = 22, gap = 12;
+    const svg = d3.select(el).append('svg').attr('width', '100%');
+    const lw = labelWidth(svg, rows.map((r) => r.gemeente));
+    const ew = labelWidth(svg, rows.map((r) => fPI(r.perInwoner)));
+    const m = {l: lw + 12, r: ew + 10, t: 4, b: 26};
+    const H = m.t + rows.length * (barH + gap) - gap + m.b;
+    svg.attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+    const x = d3.scaleLinear([0, d3.max(rows, (r) => r.perInwoner) || 1], [m.l, W - m.r]).nice();
+    const ax = svg.append('g').attr('transform', `translate(0,${H - m.b + 6})`)
+      .call(d3.axisBottom(x).ticks(Math.max(2, Math.min(5, Math.floor((W - m.l - m.r) / 80)))).tickFormat((v) => '€ ' + fInt(v)).tickSize(-(H - m.b - m.t + 6)))
+      .attr('font-size', null).attr('font-family', null);
+    ax.selectAll('.tick text').attr('dy', '1.1em');
+    const tip = tipIn(el);
+    rows.forEach((r, i) => {
+      const y = m.t + i * (barH + gap);
+      svg.append('text').attr('class', 'pm-tick').attr('x', m.l - 10).attr('y', y + barH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(r.gemeente);
+      svg.append('rect').attr('x', m.l).attr('y', y).attr('width', Math.max(1, x(r.perInwoner) - m.l)).attr('height', barH).attr('rx', 2).style('fill', 'var(--pm-teal)');
+      svg.append('text').attr('class', 'pm-end').attr('x', x(r.perInwoner) + 6).attr('y', y + barH / 2).attr('dy', '0.35em').text(fPI(r.perInwoner));
+      svg.append('rect').attr('x', 0).attr('y', y - gap / 2).attr('width', W).attr('height', barH + gap).attr('fill', 'transparent')
+        .on('mousemove', (ev) => {
+          tip.style('display', null).html('');
+          tip.append('div').attr('class', 'pm-tip-h').text(r.gemeente);
+          tip.append('div').text(`Per inwoner: ${fPI(r.perInwoner)}`);
+          tip.append('div').text(`Subsidie: ${fMln(r.totaal)}`);
+          tip.append('div').text(`Inwoners: ${fInt(r.inwoners)}`);
+          placeTip(tip, el, ev);
+        })
+        .on('mouseleave', () => tip.style('display', 'none'));
+    });
+  });
+
+  const domeinOrder = (rows) => d3.rollups(rows, (v) => d3.sum(v, (r) => r.bedrag), (r) => r.domein).sort((a, b) => b[1] - a[1]).map((d) => d[0]);
+  const kleur = (order) => (dom) => dash.colors[order.indexOf(dom) % dash.colors.length];
+
+  dash.draw('legend-domein', (el) => {
+    el.replaceChildren();
+    const d = dash.data('domeinVerdeling');
+    if (d.status !== 'ok') { el.textContent = '—'; return; }
+    const order = domeinOrder(d.data); const c = kleur(order);
+    order.forEach((dom) => {
+      const s = document.createElement('span');
+      const i = document.createElement('i'); i.className = 'pm-sw'; i.style.background = c(dom);
+      s.append(i, dom); el.appendChild(s);
+    });
+  });
+
+  dash.draw('chart-domein', (el) => {
+    el.replaceChildren();
+    const d = dash.data('domeinVerdeling');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return;
+    const order = domeinOrder(d.data); const c = kleur(order);
+    const gems = [...new Set(d.data.map((r) => r.gemeente))];
+    const W = Math.max(260, el.clientWidth || 520), barH = 24, gap = 12;
+    const svg = d3.select(el).append('svg').attr('width', '100%');
+    const lw = labelWidth(svg, gems);
+    const m = {l: lw + 12, r: 8, t: 4, b: 26};
+    const H = m.t + gems.length * (barH + gap) - gap + m.b;
+    svg.attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+    const x = d3.scaleLinear([0, 1], [m.l, W - m.r]);
+    const ax = svg.append('g').attr('transform', `translate(0,${H - m.b + 6})`)
+      .call(d3.axisBottom(x).ticks(W < 420 ? 2 : 4).tickFormat(fPct).tickSize(-(H - m.b - m.t + 6)))
+      .attr('font-size', null).attr('font-family', null);
+    ax.selectAll('.tick text').attr('dy', '1.1em');
+    const tip = tipIn(el);
+    gems.forEach((g, i) => {
+      const y = m.t + i * (barH + gap);
+      svg.append('text').attr('class', 'pm-tick').attr('x', m.l - 10).attr('y', y + barH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(g);
+      let acc = 0;
+      order.forEach((dom) => {
+        const r = d.data.find((x2) => x2.gemeente === g && x2.domein === dom);
+        if (!r || !r.aandeel) return;
+        const x0 = x(acc);
+        svg.append('rect').attr('x', x0).attr('y', y).attr('width', Math.max(0.5, x(acc + r.aandeel) - x0 - 1)).attr('height', barH).style('fill', c(dom))
+          .on('mousemove', (ev) => {
+            tip.style('display', null).html('');
+            tip.append('div').attr('class', 'pm-tip-h').text(g);
+            const line = tip.append('div');
+            line.append('i').attr('class', 'pm-sw').style('background', c(dom));
+            line.append('span').text(`${dom}: ${fPct(r.aandeel)} · ${fMln(r.bedrag)}`);
+            placeTip(tip, el, ev);
+          })
+          .on('mouseleave', () => tip.style('display', 'none'));
+        acc += r.aandeel;
+      });
+    });
+  });
+
+  // ---- tabel
+  dash.draw('tabel', (tb) => {
+    tb.replaceChildren();
+    const d = dash.data('perGemeente');
+    if (d.status !== 'ok') return;
+    d.data.slice().sort((a, b) => b.totaal - a.totaal).forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.gemeente;
+      const td = (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); };
+      td(r.gemeente);
+      td(fInt(r.inwoners), 'num pm-hide-sm');
+      td(fEur(r.totaal), 'num');
+      td(r.perInwoner == null ? '—' : fPI(r.perInwoner), 'num');
+      td(fInt(r.nInstellingen), 'num pm-hide-sm');
+      td(fInt(r.nZonder), 'num pm-hide-sm');
+      td(fInt(r.nMetStudie), 'num pm-hide-sm');
+      td(r.gemRendement == null ? '—' : '€ ' + fDec(r.gemRendement), 'num pm-hide-sm');
+      td(String(r.jaar), 'num pm-hide-sm');
+      tb.appendChild(tr);
+    });
+  });
+  // ---- vergelijking en duiding
+  dash.calc('domeinVergelijking', {
+    inputs: ['posten', 'gemeenten'],
+    title: 'Subsidie per inwoner per domein',
+    description: 'Per domein de subsidie per inwoner van elke gemeente en het verschil t.o.v. Rotterdam; kleine domeinen samengevoegd, onderwijs en overig zonder verschil.',
+    fn: (posten, gemeenten) => {
+      const orde = ['Zorg & welzijn', 'Cultuur', 'Jeugd & onderwijs', 'Sport & bewegen', 'Economie & duurzaamheid', 'Participatie & samenleving', 'Veiligheid', 'Overige domeinen'];
+      const geenVerschil = ['Jeugd & onderwijs', 'Overige domeinen'];
+      const groep = (d) => orde.includes(d) ? d : 'Overige domeinen';
+      const inw = new Map(gemeenten.map((g) => [g.gemeente, g.inwoners]));
+      const per = (rows, gem) => d3.sum(rows.filter((r) => r.gemeente === gem), (r) => r.bedrag ?? 0) / inw.get(gem);
+      const rij = (domein, rows, metVerschil) => {
+        const rotterdam = per(rows, 'Rotterdam'), denHaag = per(rows, 'Den Haag'), delft = per(rows, 'Delft');
+        return {domein, rotterdam, denHaag, delft,
+          vsDenHaag: metVerschil && rotterdam ? denHaag / rotterdam - 1 : null,
+          vsDelft: metVerschil && rotterdam ? delft / rotterdam - 1 : null};
+      };
+      return [...orde.map((d) => rij(d, posten.filter((r) => groep(r.domein) === d), !geenVerschil.includes(d))), rij('Totaal', posten, true)];
+    },
+  });
+
+  dash.calc('contextTabel', {
+    inputs: ['context', 'perGemeente'],
+    title: 'Context per gemeente',
+    description: 'Demografie per gemeente en de subsidie als aandeel van de totale lasten van de begroting.',
+    fn: (context, perGemeente) => context.map((c) => {
+      const g = perGemeente.find((x) => x.gemeente === c.gemeente);
+      return {gemeente: c.gemeente, aandeel65: c.aandeel65, sociaalMinimum: c.sociaalMinimum, inkomenPerInwoner: c.inkomenPerInwoner,
+        aandeelLasten: g && c.totaleLasten ? g.totaal / c.totaleLasten : null};
+    }),
+  });
+
+  const fPctS = (v) => v == null ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + fPct(Math.abs(v));
+  const fPct1 = nl.format('.1%');
+
+  dash.draw('vergelijk-tabel', (tb) => {
+    tb.replaceChildren();
+    const d = dash.data('domeinVergelijking'), du = dash.data('duiding');
+    if (d.status !== 'ok') return;
+    const lab = new Map((du.status === 'ok' ? du.data : []).map((r) => [r.domein, r.label]));
+    d.data.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.domein;
+      if (r.domein === 'Totaal') tr.className = 'pm-total';
+      const td = (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); };
+      td(r.domein);
+      td('€ ' + fInt(Math.round(r.rotterdam)), 'num');
+      td('€ ' + fInt(Math.round(r.denHaag)), 'num');
+      td('€ ' + fInt(Math.round(r.delft)), 'num');
+      td(r.vsDenHaag == null ? 'n.v.t.' : fPctS(r.vsDenHaag), 'num pm-hide-sm');
+      td(r.vsDelft == null ? 'n.v.t.' : fPctS(r.vsDelft), 'num pm-hide-sm');
+      td(lab.get(r.domein) ?? '—', 'pm-label');
+      tb.appendChild(tr);
+    });
+  });
+
+  dash.draw('context-tabel', (tb) => {
+    tb.replaceChildren();
+    const d = dash.data('contextTabel');
+    if (d.status !== 'ok') return;
+    d.data.forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = r.gemeente;
+      const td = (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); };
+      td(r.gemeente);
+      td(fPct(r.aandeel65), 'num');
+      td(fPct(r.sociaalMinimum), 'num');
+      td('€ ' + fInt(r.inkomenPerInwoner), 'num pm-hide-sm');
+      td(r.aandeelLasten == null ? '—' : fPct1(r.aandeelLasten), 'num');
+      tb.appendChild(tr);
+    });
+  });
+
+  dash.draw('duiding-lijst', (el) => {
+    el.replaceChildren();
+    const d = dash.data('duiding');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return;
+    d.data.forEach((r, i) => {
+      const item = document.createElement('div'); item.className = 'pm-ditem';
+      const h = document.createElement('div'); h.className = 'pm-dhead';
+      const n = document.createElement('b'); n.dataset.source = 'duiding'; n.dataset.row = String(i); n.dataset.field = 'domein'; n.textContent = r.domein;
+      const l = document.createElement('span'); l.className = 'pm-dlabel'; l.dataset.source = 'duiding'; l.dataset.row = String(i); l.dataset.field = 'label'; l.textContent = r.label;
+      h.append(n, l);
+      const p = document.createElement('p'); p.dataset.source = 'duiding'; p.dataset.row = String(i); p.dataset.field = 'duiding'; p.textContent = r.duiding;
+      item.append(h, p); el.appendChild(item);
+    });
+  });
+
+  // ---- tabbladen
+  const toon = (id) => {
+    document.querySelectorAll('.pm-page').forEach((s) => { s.hidden = s.id !== id; });
+    document.querySelectorAll('.pm-tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === id)));
+  };
+  document.querySelectorAll('.pm-tab').forEach((b) => b.addEventListener('click', () => { toon(b.dataset.tab); dash.setLink(b.dataset.tab); }));
+  const start = location.hash.slice(1);
+  if (start === 'duiding') toon('duiding');
+  // ---- vergelijkbare gemeenten
+  dash.calc('peerVergelijking', {
+    inputs: ['iv3', 'inwonersIv3', 'peers', 'overhead', 'regio'],
+    title: 'Lasten per inwoner t.o.v. vergelijkingsgemeenten',
+    description: 'Iv3-lasten 2026 per inwoner per taakveldcluster, zoals geboekt en gecorrigeerd (overhead naar rato van directe lasten toegerekend; opvang en beschermd wonen per inwoner van de centrumregio).',
+    fn: (iv3, inwonersIv3, peers, overhead, regio) => {
+      const veld = {'Cultuur (musea, podia, erfgoed, bibliotheek)': 'cultuur', 'Sport': 'sport', 'Welzijn en burgerparticipatie': 'welzijn', 'Opvang en beschermd wonen': 'opvang', 'Volksgezondheid': 'gezondheid', 'Onderwijsbeleid': 'onderwijs', 'Economie': 'economie', 'Totaal alle taakvelden': 'totaal'};
+      const inw = new Map(inwonersIv3.map((r) => [r.gemeente, r.inwoners]));
+      const regInw = new Map(regio.map((r) => [r.gemeente, r.inwonersRegio]));
+      const oh = new Map(overhead.map((r) => [r.gemeente + '|' + r.cluster, r.overheadToegerekend]));
+      const profiel = (g, methode) => {
+        const o = {};
+        iv3.filter((r) => r.gemeente === g).forEach((r) => {
+          const corr = methode === 'gecorrigeerd';
+          const lasten = r.lasten + (corr && r.cluster !== 'Totaal alle taakvelden' ? (oh.get(g + '|' + r.cluster) ?? 0) : 0);
+          const deler = corr && r.cluster === 'Opvang en beschermd wonen' ? (regInw.get(g) ?? inw.get(g)) : inw.get(g);
+          o[veld[r.cluster]] = lasten / deler;
+          if (r.cluster === 'Totaal alle taakvelden') { o.overdrachtenPerInwoner = r.overdrachten / inw.get(g); o.aandeelOverdrachten = r.lasten ? r.overdrachten / r.lasten : null; }
+        });
+        return o;
+      };
+      const velden = Object.values(veld).concat(['overdrachtenPerInwoner', 'aandeelOverdrachten']);
+      const uit = [];
+      ['gecorrigeerd', 'geboekt'].forEach((methode) => {
+        [...new Set(peers.map((p) => p.gemeente))].forEach((focus) => {
+          const ps = peers.filter((p) => p.gemeente === focus).sort((x, y) => x.rang - y.rang).map((p) => p.vergelijking);
+          const eigen = profiel(focus, methode);
+          uit.push({focus, gemeente: focus, methode, rol: 'eigen', ...eigen});
+          const pr = ps.map((g) => profiel(g, methode));
+          ps.forEach((g, i) => uit.push({focus, gemeente: g, methode, rol: 'vergelijking', ...pr[i]}));
+          const gem = Object.fromEntries(velden.map((v) => [v, d3.mean(pr, (p) => p[v])]));
+          uit.push({focus, gemeente: 'Gemiddelde vergelijkingsgemeenten', methode, rol: 'gemiddelde', ...gem});
+          uit.push({focus, gemeente: 'Verschil t.o.v. gemiddelde', methode, rol: 'verschil', ...Object.fromEntries(Object.values(veld).map((v) => [v, gem[v] ? eigen[v] / gem[v] - 1 : null]))});
+        });
+      });
+      return uit;
+    },
+  });
+
+  dash.calc('correcties', {
+    inputs: ['overheadTotaal', 'regio', 'inwonersIv3', 'peers'],
+    title: 'Correcties per gemeente',
+    description: 'Overhead als aandeel van de directe lasten, en de centrumregio waarover opvang en beschermd wonen per inwoner worden verdeeld.',
+    fn: (overheadTotaal, regio, inwonersIv3, peers) => {
+      const inw = new Map(inwonersIv3.map((r) => [r.gemeente, r.inwoners]));
+      const reg = new Map(regio.map((r) => [r.gemeente, r]));
+      const uit = [];
+      [...new Set(peers.map((p) => p.gemeente))].forEach((focus) => {
+        [focus, ...peers.filter((p) => p.gemeente === focus).sort((x, y) => x.rang - y.rang).map((p) => p.vergelijking)].forEach((g) => {
+          const o = overheadTotaal.find((x) => x.gemeente === g);
+          const r = reg.get(g);
+          uit.push({focus, gemeente: g, aandeelOverhead: o && o.directeLasten ? o.overhead / o.directeLasten : null, regio: r ? r.regio : '—', inwonersRegio: r ? r.inwonersRegio : null, aandeelEigen: r ? inw.get(g) / r.inwonersRegio : null, opmerking: o ? o.opmerking : ''});
+        });
+      });
+      return uit;
+    },
+  });
+
+  const KOP = [['cultuur', 'Cultuur'], ['sport', 'Sport'], ['welzijn', 'Welzijn'], ['opvang', 'Opvang en beschermd wonen'], ['gezondheid', 'Volksgezondheid'], ['onderwijs', 'Onderwijsbeleid'], ['economie', 'Economie'], ['totaal', 'Totaal']];
+  const focus = () => dash.params().focus || 'Rotterdam';
+  const methode = () => dash.params().methode || 'gecorrigeerd';
+  document.querySelectorAll('.pm-methodesel').forEach((sel) => sel.addEventListener('change', () => dash.setParams({methode: sel.value})));
+  dash.onData(() => { document.querySelectorAll('.pm-methodesel').forEach((sel) => { sel.value = methode(); }); });
+  document.querySelectorAll('.pm-focussel').forEach((sel) => sel.addEventListener('change', () => dash.setParams({focus: sel.value})));
+  dash.onData(() => { document.querySelectorAll('.pm-focussel').forEach((sel) => { sel.value = focus(); }); });
+
+  dash.draw('peer-kaarten', (el) => {
+    el.replaceChildren();
+    const d = dash.data('peers');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return;
+    const f2 = nl.format('.2f');
+    d.data.map((r, i) => [r, i]).filter(([r]) => r.gemeente === focus()).sort((a, b) => a[0].rang - b[0].rang).forEach(([r, i]) => {
+      const item = document.createElement('div'); item.className = 'pm-ditem';
+      const h = document.createElement('div'); h.className = 'pm-dhead';
+      const n = document.createElement('b'); n.dataset.source = 'peers'; n.dataset.row = String(i); n.dataset.field = 'vergelijking'; n.textContent = r.rang + '. ' + r.vergelijking;
+      const sc = document.createElement('span'); sc.className = 'pm-dlabel';
+      const s = (lbl, v) => lbl + ' ' + (v == null ? '—' : f2(v));
+      sc.textContent = [s('Integraal', r.amigoIntegraal), s('Sociaal', r.amigoSociaal), s('SES', r.amigoSES)].join(' · ');
+      h.append(n, sc);
+      const p = document.createElement('p'); p.dataset.source = 'peers'; p.dataset.row = String(i); p.dataset.field = 'motivering'; p.textContent = r.motivering;
+      item.append(h, p); el.appendChild(item);
+    });
+  });
+
+  dash.draw('peer-rijen', (tb) => {
+    tb.replaceChildren();
+    const d = dash.data('peerVergelijking');
+    if (d.status !== 'ok') return;
+    d.data.filter((r) => r.focus === focus() && r.methode === methode()).forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = [r.focus, r.gemeente, r.methode].map(encodeURIComponent).join(',');
+      tr.className = 'pm-rol-' + r.rol;
+      const td = (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); };
+      td(r.gemeente);
+      const hide = {sport: 1, gezondheid: 1, onderwijs: 1, economie: 1};
+      KOP.forEach(([k]) => {
+        const v = r[k];
+        const cls = 'num' + (hide[k] ? ' pm-hide-sm' : '');
+        if (r.rol === 'verschil') td(v == null ? '—' : fPctS(v), cls + (v > 0.25 ? ' pm-hi' : v < -0.25 ? ' pm-lo' : ''));
+        else td(v == null ? '—' : '€ ' + fInt(Math.round(v)), cls);
+      });
+      td(r.overdrachtenPerInwoner == null ? '' : '€ ' + fInt(Math.round(r.overdrachtenPerInwoner)), 'num pm-hide-sm');
+      td(r.aandeelOverdrachten == null ? '' : fPct(r.aandeelOverdrachten), 'num pm-hide-sm');
+      tb.appendChild(tr);
+    });
+  });
+
+  dash.draw('peer-chart', (el) => {
+    el.replaceChildren();
+    const d = dash.data('peerVergelijking');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return;
+    const r = d.data.find((x) => x.focus === focus() && x.methode === methode() && x.rol === 'verschil');
+    if (!r) return;
+    const rows = KOP.map(([k, l]) => ({k, l, v: r[k]})).filter((x) => x.v != null);
+    const W = Math.max(280, el.clientWidth || 520), barH = 20, gap = 10;
+    const svg = d3.select(el).append('svg').attr('width', '100%');
+    const lw = labelWidth(svg, rows.map((x) => x.l));
+    const ew = labelWidth(svg, rows.map((x) => fPctS(x.v)));
+    const m = {l: lw + 12, r: ew + 10, t: 4, b: 26};
+    const H = m.t + rows.length * (barH + gap) - gap + m.b;
+    svg.attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
+    const ext = Math.max(0.3, d3.max(rows, (x) => Math.abs(x.v)));
+    const x = d3.scaleLinear([-ext, ext], [m.l + ew, W - m.r]).nice();
+    const ax = svg.append('g').attr('transform', `translate(0,${H - m.b + 6})`)
+      .call(d3.axisBottom(x).ticks(W < 420 ? 3 : 5).tickFormat(fPctS).tickSize(-(H - m.b - m.t + 6)))
+      .attr('font-size', null).attr('font-family', null);
+    ax.selectAll('.tick text').attr('dy', '1.1em');
+    svg.append('line').attr('x1', x(0)).attr('x2', x(0)).attr('y1', m.t - 2).attr('y2', H - m.b + 6).style('stroke', 'var(--cds-chart-axis)');
+    const tip = tipIn(el);
+    rows.forEach((row, i) => {
+      const y = m.t + i * (barH + gap);
+      const groot = Math.abs(row.v) > 0.25;
+      svg.append('text').attr('class', 'pm-tick').attr('x', m.l - 10).attr('y', y + barH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(row.l);
+      const x0 = Math.min(x(0), x(row.v)), w = Math.max(1, Math.abs(x(row.v) - x(0)));
+      svg.append('rect').attr('x', x0).attr('y', y).attr('width', w).attr('height', barH).attr('rx', 2).style('fill', groot ? 'var(--pm-amber)' : 'var(--pm-teal)').style('opacity', row.k === 'totaal' ? 0.6 : 1);
+      svg.append('text').attr('class', 'pm-end').attr('x', row.v >= 0 ? x(row.v) + 6 : x(row.v) - 6).attr('text-anchor', row.v >= 0 ? 'start' : 'end').attr('y', y + barH / 2).attr('dy', '0.35em').text(fPctS(row.v));
+      svg.append('rect').attr('x', 0).attr('y', y - gap / 2).attr('width', W).attr('height', barH + gap).attr('fill', 'transparent')
+        .on('mousemove', (ev) => {
+          tip.style('display', null).html('');
+          tip.append('div').attr('class', 'pm-tip-h').text(row.l);
+          const eigen = d.data.find((z) => z.focus === focus() && z.methode === methode() && z.rol === 'eigen');
+          const gem = d.data.find((z) => z.focus === focus() && z.methode === methode() && z.rol === 'gemiddelde');
+          tip.append('div').text(`${focus()}: € ${fInt(Math.round(eigen[row.k]))} per inwoner`);
+          tip.append('div').text(`Gemiddelde vergelijking: € ${fInt(Math.round(gem[row.k]))}`);
+          tip.append('div').text(`Verschil: ${fPctS(row.v)}`);
+          placeTip(tip, el, ev);
+        })
+        .on('mouseleave', () => tip.style('display', 'none'));
+    });
+  });
+
+  dash.draw('correctie-rijen', (tb) => {
+    tb.replaceChildren();
+    const d = dash.data('correcties');
+    if (d.status !== 'ok') return;
+    d.data.filter((r) => r.focus === focus()).forEach((r) => {
+      const tr = document.createElement('tr');
+      tr.dataset.key = [r.focus, r.gemeente].map(encodeURIComponent).join(',');
+      const td = (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); };
+      td(r.gemeente);
+      td(r.aandeelOverhead == null ? '—' : fPct(r.aandeelOverhead), 'num');
+      td(r.regio);
+      td(r.inwonersRegio == null ? '—' : fInt(r.inwonersRegio), 'num pm-hide-sm');
+      td(r.aandeelEigen == null ? '—' : fPct(r.aandeelEigen), 'num pm-hide-sm');
+      td(r.opmerking || '', 'pm-label');
+      tb.appendChild(tr);
+    });
+  });
+
+  if (location.hash.slice(1) === 'peers') { document.querySelectorAll('.pm-page').forEach((s) => { s.hidden = s.id !== 'peers'; }); document.querySelectorAll('.pm-tab').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === 'peers'))); }
+
+  dash.draw('kaarten', (el) => {
+    el.replaceChildren();
+    const d = dash.data('perGemeente');
+    if (d.status === 'error') return fail(el);
+    if (d.status !== 'ok') return;
+    d.data.slice().sort((a, b) => b.totaal - a.totaal).forEach((r) => {
+      const a = document.createElement('a');
+      a.className = 'pm-card pm-gcard';
+      a.href = 'gemeente.html?g=' + encodeURIComponent(r.gemeente);
+      const span = (cls, txt) => { const s = document.createElement('span'); s.className = cls; s.textContent = txt; a.appendChild(s); return s; };
+      span('pm-gname', r.gemeente);
+      span('pm-gval', fMln(r.totaal));
+      span('pm-gfacts', fInt(r.nInstellingen) + ' instellingen · ' + (r.perInwoner == null ? '—' : fPI(r.perInwoner)) + ' per inwoner');
+      span('pm-gfacts', fInt(r.nZonder) + ' zonder studie · ' + fInt(r.nMetStudie) + ' met studie');
+      span('pm-gscope', r.reikwijdte || '');
+      span('pm-gopen', 'Open dashboard →');
+      el.appendChild(a);
+    });
+  });
+
+  dash.draw('focus-opties', (sel) => {
+    const d = dash.data('peers');
+    const opts = d.status === 'ok' ? [...new Set(d.data.map((r) => r.gemeente))] : [];
+    if (sel.options.length !== opts.length) sel.replaceChildren(...opts.map((g) => new Option(g, g)));
+    sel.value = dash.params().focus || opts[0] || '';
+  });
+})();
+</script>
+
+</main>
+<footer class="site-foot">Plusmaat Impact · Subsidiemonitor. Bronnen: gemeentebegrotingen, CBS (Iv3, bevolking), VNG/Waar staat je gemeente (AMIGO), AlleCijfers.</footer>
+</body>
+</html>

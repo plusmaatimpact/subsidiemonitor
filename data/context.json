@@ -1,0 +1,29 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "aandeel65": 0.16,
+  "sociaalMinimum": 0.13,
+  "inkomenPerInwoner": 33100,
+  "totaleLasten": 4897000000,
+  "lastenJaar": 2026,
+  "lastenBron": "Infographic begroting 2026 (programmalasten); totaal 2027 niet gevonden"
+ },
+ {
+  "gemeente": "Den Haag",
+  "aandeel65": 0.16,
+  "sociaalMinimum": 0.11,
+  "inkomenPerInwoner": 35200,
+  "totaleLasten": 3715000000,
+  "lastenJaar": 2027,
+  "lastenBron": "Persbericht begroting 2027–2030"
+ },
+ {
+  "gemeente": "Delft",
+  "aandeel65": 0.17,
+  "sociaalMinimum": 0.08,
+  "inkomenPerInwoner": 33200,
+  "totaleLasten": null,
+  "lastenJaar": 2027,
+  "lastenBron": "Lastentotaal 2027 niet gevonden"
+ }
+]

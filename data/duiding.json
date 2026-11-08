@@ -1,0 +1,47 @@
+[
+ {
+  "domein": "Zorg & welzijn",
+  "label": "Centrumfunctie opvang/beschermd wonen · Reikwijdte",
+  "duiding": "Grootste domein in alle drie. Het verschil komt vooral uit regionale opvang, beschermd wonen en jeugdgezondheidszorg, niet uit lokale welzijnsinzet. KesslerPerspektief, Brijder en GGZ Rivierduinen krijgen subsidie van zowel Den Haag als Delft: vergelijk hier per aanbieder en prestatie."
+ },
+ {
+  "domein": "Cultuur",
+  "label": "Centrumfunctie cultuur · Eigen dienst vs subsidie",
+  "duiding": "Aandeel in Den Haag en Delft hoger dan in Rotterdam, ondanks smallere lijsten. Weinig ontvangers met grote bedragen (Kunstmuseum, Amare, DOK, De Veste): concentratierisico. Bibliotheek is in Rotterdam en Delft een subsidie, elders soms eigen dienst."
+ },
+ {
+  "domein": "Jeugd & onderwijs",
+  "label": "Structuur: alleen Rotterdam toont onderwijs als subsidie",
+  "duiding": "Rotterdam boekt onderwijsgeld als subsidie aan schoolbesturen (o.a. BOOR, Groot-Rotterdam). Niet vergelijken zolang onbekend is hoe Den Haag en Delft dit verantwoorden."
+ },
+ {
+  "domein": "Sport & bewegen",
+  "label": "Vastgoed/exploitatie (huurkorting)",
+  "duiding": "Waarschijnlijk vooral verschil in financieringsvorm: eigen sportbedrijf, huurkorting op gemeentelijk vastgoed of subsidie. In Delft gaat sportsubsidie vooral naar onderhoud en exploitatie."
+ },
+ {
+  "domein": "Economie & duurzaamheid",
+  "label": "Doorsluis (ondernemersfonds)",
+  "duiding": "In Delft is het grootste deel het Ondernemersfonds: een doorgesluisde OZB-opslag, geen beleidskeuze. Zonder dat fonds ligt Delft lager dan Den Haag."
+ },
+ {
+  "domein": "Participatie & samenleving",
+  "label": "Indeling: in Delft vooral via welzijnsinkoop",
+  "duiding": "Rotterdam en Den Haag vergelijkbaar; in Den Haag vooral cliëntondersteuning en vrijwilligerswerk (MEE, PEP, Voorall). In Delft bijna niets op naam: wijst op inkoop of subsidie via de verordening."
+ },
+ {
+  "domein": "Veiligheid",
+  "label": "Laag volume, weinig zeggingskracht",
+  "duiding": "Kleine bedragen per inwoner; verschillen zeggen weinig."
+ },
+ {
+  "domein": "Overige domeinen",
+  "label": "Laag volume",
+  "duiding": "Wonen & leefomgeving, werk & inkomen, armoede & schulden en overig. Het Rotterdamse ‘overig’ bevat onder meer bestuur en dienstverlening."
+ },
+ {
+  "domein": "Totaal",
+  "label": "Reikwijdte lijst verschilt",
+  "duiding": "Rotterdam levert alle gesubsidieerde instellingen en regelingen aan; Den Haag alleen begrotingssubsidies, Delft alleen subsidies op naam."
+ }
+]

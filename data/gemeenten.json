@@ -1,0 +1,26 @@
+[
+ {
+  "gemeente": "Rotterdam",
+  "inwoners": 673804,
+  "jaar": 2027,
+  "bron": "Begroting 2027, overzicht ‘Gesubsidieerde instelling per programma’ (pdf-p. 590–601)",
+  "reikwijdte": "Alle gesubsidieerde instellingen en regelingen per programma",
+  "opmerking": "De som van de posten ligt € 7.200 hoger dan het eindtotaal in de bron: twee posten met een decimaal bedrag tellen in de bron niet mee in het programmatotaal. Drie posten onder ‘Toekomstbestendige stad en haven’ hebben geen bedrag. Het type instelling is in de bron-Excel afgeleid uit de naam."
+ },
+ {
+  "gemeente": "Den Haag",
+  "inwoners": 569468,
+  "jaar": 2027,
+  "bron": "Programmabegroting, overzicht voorgenomen begrotingssubsidies (vanaf p. 234); begrotingsjaar niet in aangeleverde tekst, aangenomen 2027",
+  "reikwijdte": "Alleen begrotingssubsidies (op naam); subsidies via de ASV ontbreken; aangeleverde lijst mogelijk niet volledig",
+  "opmerking": "Dezelfde instelling kan in meerdere programma’s voorkomen (bijv. Stichting Wijkz). Het type instelling is afgeleid uit de naam."
+ },
+ {
+  "gemeente": "Delft",
+  "inwoners": 110089,
+  "jaar": 2027,
+  "bron": "Begroting, overzicht subsidieontvangers per programma (p. 268–272); begrotingsjaar niet in aangeleverde tekst, aangenomen 2027",
+  "reikwijdte": "Alleen subsidies op naam in de begroting",
+  "opmerking": "Bedragen per activiteit zoals in de begroting; KesslerPerspektief staat er twee keer in (opvang en maatschappelijke opvang regio). Het type instelling is afgeleid uit de naam."
+ }
+]
