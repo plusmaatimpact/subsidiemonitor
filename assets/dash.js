@@ -66,7 +66,16 @@
     },
     calc(id, def) { calcs[id] = def; },
     loader() {},
-    draw(name, fn) { draws.push([name, fn]); },
+    draw(name, fn) {
+      if (typeof fn === 'function') { draws.push([name, fn]); return; }
+      // dash.draw('naam') zonder functie: teken dat onderdeel nu opnieuw (na sorteren, zoeken, wissen)
+      draws.filter(([n]) => n === name).forEach(([, f]) => {
+        document.querySelectorAll('[data-draw="' + name + '"]').forEach((el) => {
+          if (el.closest('[hidden]')) return;
+          try { f(el); } catch (e) { console.error('Tekenen ' + name + ' mislukt', e); }
+        });
+      });
+    },
     onData(fn) { onDatas.push(fn); },
     params() { return Object.assign({}, params); },
     setParams(p) {
