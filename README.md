@@ -106,7 +106,6 @@ Doe dit ook nadat je een nieuwe gemeente of een nieuwe vergelijkingsgemeente heb
 ## Wat de site niet doet
 
 - **Geen inlog.** Alles op de site is openbaar. Zet er dus geen vertrouwelijke gegevens in, zoals offertes of persoonsgegevens. Afschermen kan met bijvoorbeeld Cloudflare Access voor het domein.
-- **Aanvraagknop:** de knop "Aanvraag opstellen in e-mail" opent een e-mail zonder ontvanger. Wil je een vast adres? Zoek in `gemeente.html` naar `mailto:?subject` en zet je adres direct achter `mailto:`.
 - **Duidingstabel:** de tabel "Subsidie per inwoner per domein" op het tabblad Vergelijking en duiding gaat vast over Rotterdam, Den Haag en Delft. Een nieuwe gemeente verschijnt wel op de kaarten, in de grafieken en op het tabblad Vergelijkbare gemeenten.
 
 ## Bronnen

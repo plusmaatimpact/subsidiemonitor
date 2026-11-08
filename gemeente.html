@@ -18,8 +18,7 @@ window.DASH_SOURCES = (function () {
   return {
     posten: {url: 'data/posten.json', filter: (r) => r.gemeente === g},
     gemeente: {url: 'data/gemeenten.json', filter: (r) => r.gemeente === g},
-    studies: {url: 'data/studies.json', filter: (r) => r.gemeente === g},
-    studievormen: 'data/studievormen.json'
+    studies: {url: 'data/studies.json', filter: (r) => r.gemeente === g}
   };
 })();
 window.DASH_PARAMS = {"soort": "Instelling"};
@@ -173,7 +172,7 @@ window.DASH_PARAMS = {"soort": "Instelling"};
 
   <section class="pm-card" id="register">
     <h2>Register van instellingen</h2>
-    <p class="pm-note">Klik op <b>Aanvragen</b> om voor een instelling een Plusmaat-impactstudie aan te vragen. Een instelling met posten in meerdere categorieën staat één keer in de lijst, onder de categorie met het hoogste bedrag.</p>
+    <p class="pm-note">Een instelling met posten in meerdere categorieën staat één keer in de lijst, onder de categorie met het hoogste bedrag.</p>
     <div class="pm-filters">
       <input class="pm-search" type="search" placeholder="Zoek op naam" aria-label="Zoek instelling">
       <select class="dash-select pm-soort" aria-label="Soort">
@@ -195,47 +194,9 @@ window.DASH_PARAMS = {"soort": "Instelling"};
           <th data-field="categorie" class="pm-hide-sm"><button class="pm-sort" data-sort="categorie">Categorie in begroting</button></th>
           <th data-field="type" class="pm-hide-sm"><button class="pm-sort" data-sort="type">Type</button></th>
           <th data-field="subsidie" class="num" aria-sort="descending"><button class="pm-sort" data-sort="subsidie">Subsidie</button></th>
-          <th data-field="status"><button class="pm-sort" data-sort="status">Impactstatus</button></th>
-          <th data-field="rendement" class="num pm-hide-sm"><button class="pm-sort" data-sort="rendement">Rendement/€</button></th>
-          <th data-field="advies" class="pm-hide-sm"><button class="pm-sort" data-sort="advies">Advies</button></th>
-          <th><span class="pm-small">Studie</span></th>
         </tr></thead>
         <tbody data-draw="tabel"></tbody>
       </table>
-    </div>
-  </section>
-
-  <section class="pm-card pm-aanvraag" id="aanvraag" hidden>
-    <div class="pm-aanvraag-head">
-      <div>
-        <p class="pm-eyebrow">Impactstudie aanvragen</p>
-        <h3 data-draw="a-naam" data-source="instellingen">—</h3>
-      </div>
-      <button class="pm-btn pm-close" type="button">Sluiten</button>
-    </div>
-    <div class="pm-facts" data-draw="a-feiten" data-source="instellingen">—</div>
-    <div class="pm-form">
-      <div>
-        <label>Studievorm
-          <select class="dash-select" data-draw="a-vorm" data-source="studievormen instellingen" aria-label="Studievorm"></select>
-        </label>
-        <p class="pm-adv">Ons advies: <b data-draw="a-advies" data-source="instellingen">—</b>, op basis van de hoogte van de subsidie en eerdere studies.</p>
-        <p class="pm-small">Subsidieposten in de begroting:</p>
-        <ul class="pm-posten" data-draw="a-posten" data-source="posten"></ul>
-      </div>
-      <div>
-        <div class="pm-spec">
-          <div><div class="pm-lbl">Indicatieve prijs</div><div class="pm-v" data-draw="a-prijs" data-source="studievormen">—</div></div>
-          <div><div class="pm-lbl">Doorlooptijd</div><div class="pm-v" data-draw="a-weken" data-source="studievormen">—</div></div>
-          <div><div class="pm-lbl">Uren</div><div class="pm-v" data-draw="a-uren" data-source="studievormen">—</div></div>
-        </div>
-        <p class="pm-wat" data-draw="a-wat" data-source="studievormen">—</p>
-        <p class="pm-small">Ter vergelijking: de studie kost <b data-draw="a-aandeel">—</b> van één jaar subsidie.</p>
-      </div>
-    </div>
-    <div class="pm-actions">
-      <span data-draw="a-mail">—</span>
-      <span class="pm-small">Opent een e-mail met de gegevens van deze instelling. Prijzen excl. btw, indicatief.</span>
     </div>
   </section>
 
@@ -246,8 +207,6 @@ window.DASH_PARAMS = {"soort": "Instelling"};
       <dt>Bijzonderheden</dt><dd data-draw="d-opm" data-source="gemeente" data-field="opmerking">—</dd>
       <dt>Domein</dt><dd>Een vaste Plusmaat-indeling (zoals Zorg &amp; welzijn, Cultuur, Sport &amp; bewegen), zodat gemeenten met verschillende begrotingsindelingen vergelijkbaar zijn. De oorspronkelijke categorie staat in het register.</dd>
       <dt>Instelling of regeling</dt><dd>Regelingen en budgetposten zijn geen organisaties; daarvoor vraag je geen studie aan. Ze tellen wel mee in het totaal.</dd>
-      <dt>Impactstatus</dt><dd>Komt uit de lijst met studies van Plusmaat Impact, niet uit de begroting. Instellingen die daar niet in staan, krijgen ‘Geen studie bekend’; een studie door een ander bureau is dus niet zichtbaar.</dd>
-      <dt>Advies</dt><dd>Quickscan bij een subsidie onder € 100.000, standaard MKBA tot € 1 mln, uitgebreide MKBA daarboven. Na een afgeronde studie: jaarlijkse update.</dd>
       <dt>Inwoners</dt><dd>Aantal inwoners op 1 januari 2026 volgens de gemeentelijke bevolkingsregisters (via allecijfers.nl).</dd>
     </dl>
     <p>Niet in deze gegevens: wijk, bereik of deelnemers, en contactmomenten met de gemeente. Die kunnen erbij als de gemeente ze aanlevert.</p>
@@ -532,7 +491,6 @@ window.DASH_PARAMS = {"soort": "Instelling"};
       if (y == null) return -1;
       return sortDir * (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), 'nl'));
     });
-    const kies = dash.params().kies;
     const frag = document.createDocumentFragment();
     sorted.forEach((r) => {
       const tr = document.createElement('tr');
@@ -543,156 +501,19 @@ window.DASH_PARAMS = {"soort": "Instelling"};
       td(r.categorie, 'pm-hide-sm');
       td(r.type, 'pm-hide-sm');
       td(r.subsidie == null ? '—' : fEur(r.subsidie), 'num');
-      const sc = td('');
-      const b = document.createElement('span'); b.className = 'pm-badge s-' + (KEY[r.status] || 'ge'); b.textContent = r.status; sc.appendChild(b);
-      td(r.rendement == null ? '—' : '€ ' + fDec(r.rendement), 'num pm-hide-sm');
-      td(r.advies ?? '—', 'pm-hide-sm');
-      const ac = td('');
-      const btn = document.createElement('button');
-      btn.type = 'button';
-      btn.className = 'pm-btn' + (kies === r.instelling ? ' pm-primary' : '');
-      btn.dataset.kies = r.instelling;
-      btn.textContent = r.soort === 'Regeling' ? 'Regeling' : r.status === 'In uitvoering' ? 'Loopt' : 'Aanvragen';
-      btn.disabled = r.soort === 'Regeling' || r.status === 'In uitvoering';
-      ac.appendChild(btn);
       frag.appendChild(tr);
     });
     tb.appendChild(frag);
   });
 
-  document.querySelectorAll('.pm-table').forEach((t) => t.addEventListener('click', (ev) => {
-    const b = ev.target.closest('button[data-kies]');
-    if (!b || b.disabled) return;
-    dash.setParams({kies: b.dataset.kies, vorm: null});
-    dash.setLink('aanvraag');
-    requestAnimationFrame(() => document.querySelectorAll('#aanvraag').forEach((s) => s.scrollIntoView({behavior: 'smooth', block: 'start'})));
-  }));
-  document.querySelectorAll('.pm-close').forEach((b) => b.addEventListener('click', () => {
-    dash.setParams({kies: null, vorm: null});
-    document.querySelectorAll('#register').forEach((s) => s.scrollIntoView({behavior: 'smooth', block: 'start'}));
-  }));
 
   dash.onData(() => {
     const p = dash.params();
-    document.querySelectorAll('#aanvraag').forEach((s) => { s.hidden = !p.kies; });
     document.querySelectorAll('.pm-soort').forEach((sel) => { sel.value = p.soort ?? ''; });
   });
 
-  // ---- aanvraag
-  const gekozen = () => {
-    const d = dash.data('instellingen');
-    const kies = dash.params().kies;
-    return d.status === 'ok' ? d.data.find((r) => r.instelling === kies) : null;
-  };
-  const vormRij = () => {
-    const s = dash.data('studievormen');
-    const org = gekozen();
-    if (s.status !== 'ok' || !org) return null;
-    const naam = dash.params().vorm || org.advies || 'Quickscan';
-    return s.data.find((r) => r.studievorm === naam) || s.data[0];
-  };
-  const mark = (el, src, where, field, text) => {
-    const s = document.createElement('span');
-    s.dataset.source = src; s.dataset.where = where; s.dataset.field = field;
-    s.textContent = text; el.appendChild(s); return s;
-  };
-
-  dash.draw('a-naam', (el) => {
-    el.replaceChildren();
-    const r = gekozen();
-    if (!r) { el.textContent = '—'; return; }
-    mark(el, 'instellingen', 'instelling=' + enc(r.instelling), 'instelling', r.instelling);
-  });
-
-  dash.draw('a-feiten', (el) => {
-    el.replaceChildren();
-    const r = gekozen();
-    if (!r) { el.textContent = '—'; return; }
-    const w = 'instelling=' + enc(r.instelling);
-    [['domein', r.domein, 'Domein'], ['categorie', r.categorie, 'Categorie'], ['type', r.type, 'Type'], ['subsidie', r.subsidie == null ? '—' : fEur(r.subsidie), 'Subsidie'], ['status', r.status, 'Impactstatus']].forEach(([f, v, l]) => {
-      const box = document.createElement('span');
-      box.append(l + ': ');
-      const b = document.createElement('b'); box.appendChild(b);
-      mark(b, 'instellingen', w, f, v);
-      el.appendChild(box);
-    });
-  });
-
-  dash.draw('a-advies', (el) => {
-    el.replaceChildren();
-    const r = gekozen();
-    if (!r) { el.textContent = '—'; return; }
-    mark(el, 'instellingen', 'instelling=' + enc(r.instelling), 'advies', r.advies ?? '—');
-  });
-
-  dash.draw('a-posten', (ul) => {
-    ul.replaceChildren();
-    const d = dash.data('posten');
-    const r = gekozen();
-    if (d.status !== 'ok' || !r) return;
-    d.data.filter((p) => p.instelling === r.instelling).forEach((p) => {
-      const li = document.createElement('li');
-      const c = document.createElement('span'); li.appendChild(c);
-      mark(c, 'posten', 'post=' + p.post, 'categorie', p.categorie);
-      const b = document.createElement('b'); li.appendChild(b);
-      mark(b, 'posten', 'post=' + p.post, 'bedrag', p.bedrag == null ? 'geen bedrag' : fEur(p.bedrag));
-      ul.appendChild(li);
-    });
-  });
-
-  dash.draw('a-vorm', (sel) => {
-    const s = dash.data('studievormen');
-    const v = vormRij();
-    sel.replaceChildren(...(s.status === 'ok' ? s.data : []).map((r) => new Option(r.studievorm, r.studievorm)));
-    if (v) sel.value = v.studievorm;
-    sel.onchange = () => dash.setParams({vorm: sel.value || null});
-  });
-
-  const spec = (name, field, fmt) => dash.draw(name, (el) => {
-    el.replaceChildren();
-    const v = vormRij();
-    if (!v) { el.textContent = '—'; return; }
-    mark(el, 'studievormen', 'studievorm=' + enc(v.studievorm), field, fmt(v[field]));
-  });
-  spec('a-prijs', 'prijs', fEur);
-  spec('a-weken', 'weken', (w) => fInt(w) + ' weken');
-  spec('a-uren', 'uren', fInt);
-  spec('a-wat', 'wat', (t) => t);
-
-  dash.draw('a-aandeel', (el) => {
-    const r = gekozen(); const v = vormRij();
-    el.textContent = r && v && r.subsidie ? fPct1(v.prijs / r.subsidie) : '—';
-  });
-
-  dash.draw('a-mail', (el) => {
-    el.replaceChildren();
-    const r = gekozen(); const v = vormRij();
-    const gd = dash.data('gemeente');
-    const g = gd.status === 'ok' && gd.data[0] ? gd.data[0] : null;
-    if (!r || !v || !g) { el.textContent = '—'; return; }
-    const body = [
-      'Graag vragen wij een impactstudie aan bij Plusmaat Impact.',
-      '',
-      'Gemeente: ' + g.gemeente,
-      'Instelling: ' + r.instelling + ' (' + r.type + ')',
-      'Categorie: ' + r.categorie,
-      'Subsidie ' + g.jaar + ' (begroting): ' + (r.subsidie == null ? 'onbekend' : fEur(r.subsidie)),
-      'Huidige impactstatus: ' + r.status,
-      '',
-      'Gewenste studievorm: ' + v.studievorm + ' (indicatief ' + fEur(v.prijs) + ' excl. btw, ca. ' + fInt(v.weken) + ' weken)',
-      '',
-      'Contactpersoon gemeente:',
-      'Gewenste startdatum:',
-    ].join('\n');
-    const a = document.createElement('a');
-    a.className = 'pm-link';
-    a.href = 'mailto:?subject=' + encodeURIComponent('Aanvraag impactstudie: ' + r.instelling) + '&body=' + encodeURIComponent(body);
-    a.textContent = 'Aanvraag opstellen in e-mail';
-    el.appendChild(a);
-  });
-
   const named = document.getElementById(location.hash.slice(1));
-  if (named && named.id !== 'aanvraag') requestAnimationFrame(() => named.scrollIntoView());
+  if (named) requestAnimationFrame(() => named.scrollIntoView());
 })();
 </script>
 
