@@ -413,14 +413,14 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
 
 <script>
 (() => {
-  const nl = d3.formatLocale({decimal: ',', thousands: '.', grouping: [3], currency: ['€ ', '']});
+  const nl = d3.formatLocale({decimal: ',', thousands: '.', grouping: [3], currency: ['€\u00a0', '']});
   const fInt = nl.format(',d');
   const fEur = nl.format('$,.0f');
   const fPct = nl.format('.0%');
   const fDec = nl.format(',.2f');
   const f1 = nl.format(',.1f');
-  const fMln = (v) => v == null ? '—' : Math.abs(v) >= 1e6 ? '€ ' + f1(v / 1e6) + ' mln' : fEur(v);
-  const fPI = (v) => '€ ' + fInt(Math.round(v));
+  const fMln = (v) => v == null ? '—' : Math.abs(v) >= 1e6 ? '€\u00a0' + f1(v / 1e6) + ' mln' : fEur(v);
+  const fPI = (v) => '€\u00a0' + fInt(Math.round(v));
 
   dash.calc('perGemeente', {
     inputs: ['posten', 'gemeenten', 'studies'],
@@ -519,7 +519,7 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
     svg.attr('viewBox', `0 0 ${W} ${H}`).attr('height', H);
     const x = d3.scaleLinear([0, d3.max(rows, (r) => r.perInwoner) || 1], [m.l, W - m.r]).nice();
     const ax = svg.append('g').attr('transform', `translate(0,${H - m.b + 6})`)
-      .call(d3.axisBottom(x).ticks(Math.max(2, Math.min(5, Math.floor((W - m.l - m.r) / 80)))).tickFormat((v) => '€ ' + fInt(v)).tickSize(-(H - m.b - m.t + 6)))
+      .call(d3.axisBottom(x).ticks(Math.max(2, Math.min(5, Math.floor((W - m.l - m.r) / 80)))).tickFormat((v) => '€\u00a0' + fInt(v)).tickSize(-(H - m.b - m.t + 6)))
       .attr('font-size', null).attr('font-family', null);
     ax.selectAll('.tick text').attr('dy', '1.1em');
     const tip = tipIn(el);
@@ -614,7 +614,7 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
       td(fInt(r.nInstellingen), 'num pm-hide-sm');
       td(fInt(r.nZonder), 'num pm-hide-sm');
       td(fInt(r.nMetStudie), 'num pm-hide-sm');
-      td(r.gemRendement == null ? '—' : '€ ' + fDec(r.gemRendement), 'num pm-hide-sm');
+      td(r.gemRendement == null ? '—' : '€\u00a0' + fDec(r.gemRendement), 'num pm-hide-sm');
       td(String(r.jaar), 'num pm-hide-sm');
       tb.appendChild(tr);
     });
@@ -665,9 +665,9 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
       if (r.domein === 'Totaal') tr.className = 'pm-total';
       const td = (txt, cls) => { const c = document.createElement('td'); if (cls) c.className = cls; c.textContent = txt; tr.appendChild(c); };
       td(r.domein);
-      td('€ ' + fInt(Math.round(r.rotterdam)), 'num');
-      td('€ ' + fInt(Math.round(r.denHaag)), 'num');
-      td('€ ' + fInt(Math.round(r.delft)), 'num');
+      td('€\u00a0' + fInt(Math.round(r.rotterdam)), 'num');
+      td('€\u00a0' + fInt(Math.round(r.denHaag)), 'num');
+      td('€\u00a0' + fInt(Math.round(r.delft)), 'num');
       td(r.vsDenHaag == null ? 'n.v.t.' : fPctS(r.vsDenHaag), 'num pm-hide-sm');
       td(r.vsDelft == null ? 'n.v.t.' : fPctS(r.vsDelft), 'num pm-hide-sm');
       td(lab.get(r.domein) ?? '—', 'pm-label');
@@ -686,7 +686,7 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
       td(r.gemeente);
       td(fPct(r.aandeel65), 'num');
       td(fPct(r.sociaalMinimum), 'num');
-      td('€ ' + fInt(r.inkomenPerInwoner), 'num pm-hide-sm');
+      td('€\u00a0' + fInt(r.inkomenPerInwoner), 'num pm-hide-sm');
       td(r.aandeelLasten == null ? '—' : fPct1(r.aandeelLasten), 'num');
       tb.appendChild(tr);
     });
@@ -816,9 +816,9 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
         const v = r[k];
         const cls = 'num' + (hide[k] ? ' pm-hide-sm' : '');
         if (r.rol === 'verschil') td(v == null ? '—' : fPctS(v), cls + (v > 0.25 ? ' pm-hi' : v < -0.25 ? ' pm-lo' : ''));
-        else td(v == null ? '—' : '€ ' + fInt(Math.round(v)), cls);
+        else td(v == null ? '—' : '€\u00a0' + fInt(Math.round(v)), cls);
       });
-      td(r.overdrachtenPerInwoner == null ? '' : '€ ' + fInt(Math.round(r.overdrachtenPerInwoner)), 'num pm-hide-sm');
+      td(r.overdrachtenPerInwoner == null ? '' : '€\u00a0' + fInt(Math.round(r.overdrachtenPerInwoner)), 'num pm-hide-sm');
       td(r.aandeelOverdrachten == null ? '' : fPct(r.aandeelOverdrachten), 'num pm-hide-sm');
       tb.appendChild(tr);
     });

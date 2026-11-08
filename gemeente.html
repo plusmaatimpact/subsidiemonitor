@@ -215,14 +215,14 @@ window.DASH_PARAMS = {"soort": "Instelling"};
 
 <script>
 (() => {
-  const nl = d3.formatLocale({decimal: ',', thousands: '.', grouping: [3], currency: ['€ ', '']});
+  const nl = d3.formatLocale({decimal: ',', thousands: '.', grouping: [3], currency: ['€\u00a0', '']});
   const fInt = nl.format(',d');
   const fEur = nl.format('$,.0f');
   const fPct = nl.format('.0%');
   const fPct1 = nl.format('.1%');
   const fDec = nl.format(',.2f');
   const f1 = nl.format(',.1f');
-  const fMln = (v) => v == null ? '—' : Math.abs(v) >= 1e6 ? '€ ' + f1(v / 1e6) + ' mln' : fEur(v);
+  const fMln = (v) => v == null ? '—' : Math.abs(v) >= 1e6 ? '€\u00a0' + f1(v / 1e6) + ' mln' : fEur(v);
   const STATUS = ['Afgerond', 'In uitvoering', 'Aangevraagd', 'Geen studie bekend'];
   const KEY = {'Afgerond': 'af', 'In uitvoering': 'iu', 'Aangevraagd': 'aa', 'Geen studie bekend': 'ge'};
   const enc = (v) => String(v).replace(/%/g, '%25').replace(/&/g, '%26').replace(/=/g, '%3D');
@@ -337,9 +337,9 @@ window.DASH_PARAMS = {"soort": "Instelling"};
   one('k-totaal', 'kpi', 'totaal', fMln);
   one('k-ninst', 'kpi', 'nInstellingen', fInt);
   one('k-nreg', 'kpi', 'nRegelingen', fInt);
-  one('k-inwoner', 'kpi', 'perInwoner', (v) => '€ ' + fInt(Math.round(v)));
+  one('k-inwoner', 'kpi', 'perInwoner', (v) => '€\u00a0' + fInt(Math.round(v)));
   one('k-metstudie', 'kpi', 'nMetStudie', fInt);
-  one('k-rendement', 'kpi', 'gemRendement', (v) => '€ ' + fDec(v));
+  one('k-rendement', 'kpi', 'gemRendement', (v) => '€\u00a0' + fDec(v));
   one('k-nafgerond', 'kpi', 'nAfgerond', fInt);
 
   // ---- charts
@@ -407,7 +407,7 @@ window.DASH_PARAMS = {"soort": "Instelling"};
         .on('mouseleave', () => tip.style('display', 'none'));
     });
   };
-  const tickMln = (v) => v === 0 ? '0' : '€ ' + nl.format(',~f')(v / 1e6) + ' mln';
+  const tickMln = (v) => v === 0 ? '0' : '€\u00a0' + nl.format(',~f')(v / 1e6) + ' mln';
 
   dash.draw('chart-domein', (el) => {
     const d = dash.data('perDomein');
