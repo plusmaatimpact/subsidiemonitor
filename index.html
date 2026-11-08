@@ -8,13 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Source+Sans+3:wght@400;600&display=swap">
-<link rel="stylesheet" href="assets/plusmaat.css">
+<link rel="stylesheet" href="assets/plusmaat.css?v=4">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
 <script>
 window.DASH_SOURCES = {"posten": "data/posten.json", "gemeenten": "data/gemeenten.json", "studies": "data/studies.json", "context": "data/context.json", "duiding": "data/duiding.json", "iv3": "data/iv3.json", "inwonersIv3": "data/inwonersIv3.json", "peers": "data/peers.json", "overhead": "data/overhead.json", "overheadTotaal": "data/overheadTotaal.json", "regio": "data/regio.json"};
 window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
 </script>
-<script src="assets/dash.js"></script>
+<script src="assets/dash.js?v=4"></script>
 </head>
 <body>
 <header class="site-top"><div class="site-top-in">
@@ -350,8 +350,10 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
     </div>
 
     <div class="pm-card" id="peer-verschil">
-      <h2>Verschil met vergelijkingsgemeenten per taakveld</h2>
+      <h2>Verschil <span data-draw="peer-titel-focus" data-source="peers">—</span> t.o.v. <span data-draw="peer-titel-peers" data-source="peers">—</span> per taakveld</h2>
       <p class="pm-note">Lasten per inwoner van de gekozen gemeente ten opzichte van het gemiddelde van haar drie vergelijkingsgemeenten, begroting 2026.</p>
+      <div class="pm-legend"><span><i class="pm-sw" style="background:var(--cds-chart-muted)"></i>Binnen 25% van het gemiddelde</span><span><i class="pm-sw s-aa"></i>Meer dan 25% hoger of lager</span></div>
+      <p class="pm-note" style="margin-top:0">Rechts van de nullijn = hoger dan de vergelijkingsgemeenten, links = lager. De kleur zegt alleen hoe groot het verschil is, niet of hoger of lager beter is.</p>
       <div class="pm-chart pm-short" data-draw="peer-chart" data-source="peerVergelijking"></div>
     </div>
 
@@ -782,6 +784,14 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
   document.querySelectorAll('.pm-focussel').forEach((sel) => sel.addEventListener('change', () => dash.setParams({focus: sel.value})));
   dash.onData(() => { document.querySelectorAll('.pm-focussel').forEach((sel) => { sel.value = focus(); }); });
 
+  dash.draw('peer-titel-focus', (el) => { el.textContent = focus(); });
+  dash.draw('peer-titel-peers', (el) => {
+    const d = dash.data('peers');
+    if (d.status !== 'ok') { el.textContent = 'vergelijkingsgemeenten'; return; }
+    const ps = d.data.filter((r) => r.gemeente === focus()).sort((a, b) => a.rang - b.rang).map((r) => r.vergelijking);
+    el.textContent = ps.length > 1 ? ps.slice(0, -1).join(', ') + ' en ' + ps[ps.length - 1] : (ps[0] || 'vergelijkingsgemeenten');
+  });
+
   dash.draw('peer-kaarten', (el) => {
     el.replaceChildren();
     const d = dash.data('peers');
@@ -852,7 +862,7 @@ window.DASH_PARAMS = {"focus": "Rotterdam", "methode": "gecorrigeerd"};
       const groot = Math.abs(row.v) > 0.25;
       svg.append('text').attr('class', 'pm-tick').attr('x', m.l - 10).attr('y', y + barH / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(row.l);
       const x0 = Math.min(x(0), x(row.v)), w = Math.max(1, Math.abs(x(row.v) - x(0)));
-      svg.append('rect').attr('x', x0).attr('y', y).attr('width', w).attr('height', barH).attr('rx', 2).style('fill', groot ? 'var(--pm-amber)' : 'var(--pm-teal)').style('opacity', row.k === 'totaal' ? 0.6 : 1);
+      svg.append('rect').attr('x', x0).attr('y', y).attr('width', w).attr('height', barH).attr('rx', 2).style('fill', groot ? 'var(--pm-amber)' : 'var(--cds-chart-muted)').style('opacity', row.k === 'totaal' ? 0.6 : 1);
       svg.append('text').attr('class', 'pm-end').attr('x', row.v >= 0 ? x(row.v) + 6 : x(row.v) - 6).attr('text-anchor', row.v >= 0 ? 'start' : 'end').attr('y', y + barH / 2).attr('dy', '0.35em').text(fPctS(row.v));
       svg.append('rect').attr('x', 0).attr('y', y - gap / 2).attr('width', W).attr('height', barH + gap).attr('fill', 'transparent')
         .on('mousemove', (ev) => {
